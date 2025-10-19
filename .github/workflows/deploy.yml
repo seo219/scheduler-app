@@ -3,23 +3,50 @@ name: Deploy Vite to GitHub Pages
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+
+# 👉 OIDC/Pages 배포에 필요한 권한을 명시적으로 부여
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+
+      # npm을 쓴다면 lockfile이 커밋되어 있어야 npm ci가 동작합니다.
+      # lockfile이 없다면 임시로 npm install로 바꿔도 됩니다.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # Vite 빌드 결과(dist)를 Pages 아티팩트로 업로드
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
   deploy:
-    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # build job이 끝나야 deploy 실행
     needs: build
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
