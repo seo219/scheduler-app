@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/scheduler-app/',         // ← 리포지토리명과 동일
+  base: '/',         // ← 루트 경로 배포이므로 이렇게
   build: {
-    sourcemap: true,               // 에러 원인 추적에 도움 (선택)
+    sourcemap: true, // 선택 사항
   },
 })
