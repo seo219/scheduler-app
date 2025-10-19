@@ -249,7 +249,8 @@ function buildHolidayPrompt({ interest, energy, sleepTime, windows, duration, ta
   lines.push('');
   lines.push('규칙:');
   lines.push('- 고정/서로 겹치지 않게. 10분 단위로 반올림.');
-  lines.push('- 세션 사이 휴식 최소 15분 확보.');
+  lines.push('- 세션 사이 휴식 최소 10분 확보.');
+  lines.push('- 세션 사이 휴식 길이 컨디션에 맞게 조절.')
   lines.push('- 관심사에 맞는 다양한 하위 활동명을 섞을 것.');
   lines.push('- 휴식 항목은 과도하게 만들지 말 것(필요시 1~2개).');
   lines.push('- 동일 활동이 연속이면 같은 이름으로 배치(후처리 병합).');
@@ -354,4 +355,7 @@ export function generateSlotTimes(start = '06:00', end = '22:00', stepMinutes = 
   for (let t = s; t <= e; t += stepMinutes) out.push(toHHMM(t));
   return out;
 }
+
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY || '';
+if (!apiKey) console.warn('API Key가 설정되지 않았습니다!');
 
