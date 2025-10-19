@@ -1,0 +1,151 @@
+.plan-detail-form {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: #fafafa !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.plan-detail-form h1 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+  margin: 0 0 12px;
+  word-break: keep-all;
+  text-align: center;
+}
+
+.plan-detail-form h3 {
+  margin-bottom: 12px;
+}
+
+/* ★★★ 휴일/템플릿 버튼 중앙 정렬 (공통 적용) ★★★ */
+.plan-detail-form .holiday-template-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 45px;
+}
+
+.plan-detail-form .field {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.plan-detail-form .field input,
+.plan-detail-form .field select {
+  width: 100%;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+}
+
+.plan-detail-form .btn-holiday,
+.plan-detail-form .btn-template {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  /* margin-right: 8px; (제거 또는 0으로 설정하여 gap에 의존) */
+}
+
+.plan-detail-form .btn-holiday {
+  background: #555;
+}
+
+.plan-detail-form .btn-holiday:hover {
+  background: #333;
+}
+
+.plan-detail-form .btn-template {
+  background: #555;
+}
+
+.plan-detail-form .btn-template:hover {
+  background: #333;
+}
+
+.plan-detail-form .buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.plan-detail-form .buttons button {
+  width: 100%;
+  padding: 12px 10px;
+  border-radius: 8px;
+  background: #555;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.plan-detail-form .buttons button:hover {
+  background: #333;
+}
+
+/* --- 모바일 전용 수정 (max-width: 679px) --- */
+@media (max-width: 679px) {
+  .plan-detail-form h1 {
+    font-size: 1.25rem;
+    text-align: left;
+  }
+
+  .plan-detail-form .field {
+    grid-template-columns: 1fr;
+  }
+  
+  /* 🌟🌟 FixedSchedule 색상 옵션: 좌우 정렬 및 크기 일치 (최종 덮어쓰기) 🌟🌟 */
+  .plan-detail-form .time-row .color-input-fix {
+    /* 클래스 선택자로 우선순위를 높여 완벽한 정렬을 시도합니다. */
+    grid-column: auto; 
+    width: 100% !important; 
+    
+    /* 패딩, 높이, 테두리 등을 시간 옵션과 완벽히 일치시킵니다. */
+    padding: 6px 10px !important; 
+    height: 44px !important; 
+    min-height: 44px !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important; 
+    border: 1px solid #000 !important; 
+    
+    /* 외형 초기화 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  /* ------------------------------------------------------------------- */
+
+
+  .plan-detail-form .buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- 데스크탑 유지 (min-width: 680px) --- */
+@media (min-width: 680px) {
+  .plan-detail-form h1 {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+
+  .plan-detail-form .field {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+
+  .plan-detail-form .buttons {
+    grid-template-columns: 1fr 1fr;
+  }
+}

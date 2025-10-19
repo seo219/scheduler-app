@@ -1,0 +1,203 @@
+/* FixedSchedule.css */
+
+/* --- 공통 스타일 (모바일, 데스크탑 모두 적용) --- */
+
+/* 전체 컨테이너 */
+.fixed-schedule {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+/* 제목 */
+.fixed-schedule h2 {
+  margin: 20px 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* 한 줄(수면/식사/스케줄 공통) */
+.fixed-schedule .time-row {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* 줄 내부 요소 간격 */
+  margin-bottom: 20px; /* 줄 사이 간격 */
+  flex-wrap: wrap; /* 요소가 넘칠 경우 줄바꿈 */
+}
+
+/* 입력창 */
+.fixed-schedule input[type="time"],
+.fixed-schedule input[type="text"],
+.fixed-schedule select {
+  padding: 4px 6px;
+  border: 2px solid #000;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* 색상 입력창 */
+.fixed-schedule input[type="color"] {
+  padding: 0;
+  height: 20px;
+  width: 18px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* 삭제 버튼 */
+.fixed-schedule .delete-btn {
+  width: 25%;
+  padding: 6px 20px;
+  background: #555;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  min-width: 40px;
+}
+.fixed-schedule .delete-btn:hover {
+  background: #333;
+}
+
+/* 추가 버튼을 감싸는 컨테이너 */
+.add-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+/* 추가 버튼 */
+.fixed-schedule .add-btn {
+  width: auto;
+  margin-top: 12px;
+  padding: 6px 14px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.fixed-schedule .add-btn:hover {
+  background: #222;
+}
+
+/* 섹션 구분선 */
+.fixed-schedule h2:not(:first-child) {
+  padding-top: 16px;
+  border-top: 1px solid #ddd;
+}
+/* --- 모바일 레이아웃 (~679px) --- */
+@media (max-width: 679px) {
+  .fixed-schedule .time-row {
+    display: grid;
+    /* ✅ 2열 그리드(88px 1fr)로 복원하여 레이아웃 깨짐 현상 방지 */
+    grid-template-columns: 88px 1fr;
+    gap: 10px 12px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  /* input[type="time"]을 제외한 나머지 입력 요소들 */
+  .fixed-schedule input[type="text"],
+  .fixed-schedule input[type="color"],
+  .fixed-schedule select {
+    width: 100%; /* 1fr 컬럼 내에서 100% 사용 */
+    min-height: 44px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  
+  /* ✅ 시간 입력 필드 너비 축소 및 정렬 (최종 수정) */
+  .fixed-schedule input[type="time"] {
+    /* 1fr 컬럼 내에서 max-width만 적용하고 너비를 auto로 설정 */
+    max-width: 80px; 
+    min-height: 44px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    
+    /* ✅ 핵심: 1fr 컬럼 내에서 오른쪽 끝으로 정렬하여 80px만 차지하도록 함 */
+    justify-self: end; 
+    width: auto; 
+  }
+  
+  .fixed-schedule label {
+    font-size: 12px;
+    color: #555;
+    align-self: center;
+  }
+  .fixed-schedule label:empty {
+    display: none;
+  }
+  /* '할 일' 입력창은 2열 전체를 차지 */
+  .fixed-schedule .time-row > input[placeholder="할 일"] {
+    grid-column: 1 / -1;
+  }
+  /* 식사 종류 선택창은 2열 전체를 차지 */
+  .fixed-schedule .time-row select:first-of-type {
+    grid-column: 1 / -1;
+  }
+  /* 삭제 버튼은 2열 전체를 차지하며 오른쪽 끝에 배치 */
+  .fixed-schedule .delete-btn {
+    grid-column: 1 / -1;
+    justify-self: end;
+    min-height: 40px;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+}
+
+
+/* --- 데스크탑 레이아웃 (680px~) --- */
+@media (min-width: 680px) {
+  /* 수면 시간 라벨 */
+  .fixed-schedule .time-row:first-of-type label {
+    flex-shrink: 0;
+    width: auto;
+  }
+  
+  /* 수면 시간 입력 필드 */
+  .fixed-schedule .time-row:first-of-type input[type="time"] {
+    flex: 1;
+    max-width: 340px; /* 300px에서 340px로 변경 */
+  }
+
+  /* 식사 및 고정 스케줄 행 */
+  .fixed-schedule .time-row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+  
+  /* 식사 및 고정 스케줄 시간 입력 필드 크기 조정 */
+  .fixed-schedule .time-row input[type="time"] {
+    flex-grow: 1;
+    max-width: 260px;
+  }
+
+  /* '할 일' 입력창 너비 및 간격 */
+  .fixed-schedule input[placeholder="할 일"] {
+    min-width: 100px;
+    max-width: 117px;
+    flex-grow: 0;
+    margin-right: 30px;
+  }
+  
+  /* 라벨 가로 길이 확보를 위한 스타일 */
+  .fixed-schedule .time-row label {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* '아침, 점심, 저녁' 옵션 크기 조정 */
+  .fixed-schedule .time-row select {
+    max-width: 100px;
+    flex-shrink: 0;
+  }
+}

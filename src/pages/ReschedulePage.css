@@ -1,0 +1,102 @@
+.plan-detail-form {
+  padding: 1rem;
+  background-color: var(--bg-color);
+  border-radius: 0.5rem;
+}
+
+/* ListHeader 아래 간격 주기 */
+.plan-detail-form .list-header {
+  margin-bottom: 0.5rem;
+}
+
+/* 버튼 스타일 (필요 시 캘린더 페이지와 맞춰주세요) */
+.plan-detail-form .save-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+/* src/pages/ReschedulePage.css */
+
+/* 요약 일정표 */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.summary-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid #e0e0e0;
+}
+
+/* 버튼 그룹 (저장/취소) */
+.btn-group {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.btn-group button {
+  padding: 8px 16px;
+  border: none;
+  background: #3f51b5;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-group button:disabled {
+  background: #bbb;
+  cursor: default;
+}
+
+/* 오류 메시지 스타일 */
+.error {
+  color: #d32f2f;
+  margin-top: 8px;
+}
+
+/* 페이지 전체 레이아웃 */
+.reschedule-page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: var(--bg-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.reschedule-page h2 {
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.reschedule-page p {
+  margin-top: 8px;
+  color: #666;
+}
+/* src/pages/ReschedulePage.css */
+
+.ai-schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+.ai-schedule-table th,
+.ai-schedule-table td {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+.btn-group {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}

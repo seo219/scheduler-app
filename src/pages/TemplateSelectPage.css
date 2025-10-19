@@ -1,0 +1,54 @@
+/* src/pages/TemplateSelectPage.css */
+
+.template-select-page {
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fafafa;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.template-select-page h2 {
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.template-list {
+  list-style: none;
+  padding: 0;
+}
+
+.template-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border: 2px solid #000;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.template-name {
+  font-weight: bold;
+}
+
+.btn-load {
+  padding: 6px 12px;
+  background: #555;      /* 무채색 버튼 (시유) */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-load:hover {
+  background: #333;      /* hover 시 진한 회색 (시유) */
+}

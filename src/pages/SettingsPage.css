@@ -1,0 +1,120 @@
+/* src/pages/SettingsPage.css */
+
+.settings-page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+  width: 100%;
+  border-radius: 12px;
+  background: #fafafa;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-page h1 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.setting-item .label {
+  font-weight: bold;
+}
+
+.setting-item .value {
+  color: #555;
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.section h2 {
+  margin-bottom: 12px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  width: 120px;
+  font-weight: 900; 
+  font-size: 1rem;  
+}
+
+.form-group select,
+.form-group input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid black; /* 검정 실선 */
+  border-radius: 4px;
+}
+
+/* 로그인 계정 텍스트 */
+.account-info {
+  font-family: var(--font-family);
+  font-size: 1rem;
+  color: #333;
+}
+
+/* "로그인 계정:" 부분만 글자 크기/굵기 조정 */
+.account-info .account-label {
+  font-weight: 900; 
+  font-size: inherit; 
+  margin-right: 4px;
+}
+
+/* 버튼 공통 스타일 */
+.btn {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* 로그아웃 버튼 */
+.btn.logout {
+  background: #555;
+  color: white;
+  margin-top: 32px;
+}
+.btn.logout:hover {
+  background: #333;
+}
+
+/* 비밀번호 재설정 버튼 */
+.btn.reset {
+  background: #777;
+  color: white;
+}
+.btn.reset:hover {
+  background: #555;
+}
+
+/* 계정 삭제 버튼 */
+.btn.delete-account {
+  background: #ef1616 !important;
+  color: white;
+}
+.btn.delete-account:hover {
+  background: #ab2626!important;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}

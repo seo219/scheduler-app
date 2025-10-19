@@ -1,0 +1,16 @@
+/* src/index.css */
+
+body {
+  margin: 0;
+  /* display:flex;  <= 삭제 */
+  /* place-items:center; <= 삭제 */
+  min-width: 320px;
+  min-height: 100vh;
+
+  font-family: var(--font-family);
+  line-height: var(--line-height);
+  font-weight: var(--font-weight);
+
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}

@@ -1,0 +1,167 @@
+/* src/pages/TemplateForm.css */
+
+.template-form {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fafafa !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.template-form h1 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.template-form input[type="text"] {
+  width: 790px;
+  padding: 8px;
+  margin-right: 50px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.template-form button {
+  padding: 10px 16px;
+  background: #555;              /* 무채색 버튼 (시유) */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.template-form button:hover {
+  background: #333;              /* hover 시 진한 회색 (시유) */
+}
+
+/* TemplateForm.css — 모바일 간격 + 하단 안전 여백 */
+
+.template-form {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fafafa !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  box-sizing: border-box;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom)); /* iOS 하단 */
+}
+
+.template-form h1 {
+  font-size: 20px;
+  margin: 6px 0 14px;
+}
+
+.template-form input[type="text"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.template-form button {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 10px;
+  background: #444;
+  color: #fff;
+}
+
+/* --- [가로 스크롤 방지 - TemplateForm 전용 핫픽스] --- */
+
+/* 0) 페이지/문서 레벨에서 넘침 차단 */
+html, body { overflow-x: hidden; }
+
+/* 1) 템플릿 폼 컨테이너 스크롤 차단 */
+.template-form { 
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* 2) 그리드/플렉스 자식이 최소 콘텐츠 폭(min-content)로
+      부모를 밀어내는 문제 방지 */
+.template-form * { 
+  box-sizing: border-box;
+  min-width: 0;                /* grid/flex 자식 폭 강제 축소 허용 */
+  max-width: 100%;             /* 100% 초과 금지 */
+}
+
+/* 3) FixedSchedule 내부 아이템이 행을 밀어내지 않도록 */
+.fixed-schedule .time-row { overflow: hidden; }
+.fixed-schedule .time-row > * { min-width: 0; }
+
+/* 4) 폼 컨트롤은 항상 컨테이너 안에 맞춤 */
+.fixed-schedule select,
+.fixed-schedule input[type="time"],
+.fixed-schedule input[type="text"],
+.fixed-schedule input[type="color"] {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* 5) 삭제 버튼이 가로로 튀어나오지 않도록 */
+.fixed-schedule .delete-btn {
+  max-width: 100%;
+}
+
+.template-form {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fafafa !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  box-sizing: border-box;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  overflow-x: hidden; /* 페이지 스코프에서만 가로 넘침 차단 */
+}
+
+.template-form h1 {
+  font-size: 20px;
+  margin: 6px 0 14px;
+}
+
+/* 기본(모바일 우선): 유동폭 */
+.template-form input[type="text"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* 데스크톱에서만 살짝 넓게 보이도록 최대폭 */
+@media (min-width: 900px) {
+  .template-form input[type="text"] {
+    max-width: 100%;   /* 컨테이너 안에서만 넓어짐 */
+    margin-right: 0;
+  }
+}
+
+.template-form button {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 10px;
+  background: #444;
+  color: #fff;
+}
+
+/* FixedSchedule 내부 자식이 부모를 밀어내지 않게 */
+.template-form * { box-sizing: border-box; min-width: 0; max-width: 100%; }
+.fixed-schedule .time-row { overflow: hidden; }
+.fixed-schedule .time-row > * { min-width: 0; }

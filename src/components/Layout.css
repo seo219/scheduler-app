@@ -1,0 +1,54 @@
+/* src/components/Layout.css */
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
+.layout-container main {
+  flex: 1;
+  padding: 16px;
+}
+
+.layout-container .nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background-color: var(--bg-color);
+  border-top: 1px solid #ddd;
+}
+
+/* === Centered shell (desktop/mobile 동일) === */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-color);
+}
+
+.layout-container main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  padding-bottom: calc(60px + env(safe-area-inset-bottom)); /* 하단 Nav 대응 */
+}
+
+.layout-container main > * {
+  width: 100%;
+  max-width: 1000px; /* 페이지 전체의 최대 폭(원하면 720/880 등으로 조정) */
+  margin: 0 auto;
+}
+
+/* 하단 탭과 겹침 방지 */
+.main-content,
+.page-content,
+.plan-detail-page,
+.template-form,
+.fixed-schedule {
+  padding-bottom: max(76px, calc(24px + env(safe-area-inset-bottom)));
+}

@@ -1,0 +1,359 @@
+/* src/pages/CalendarPage.css
+   계획표 = 밑줄 / TODO = 우측 상단 파란 점 / 공휴일 행은 항상 아래 고정 */
+
+/* ========== 공통 컨테이너 ========== */
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+  padding-left: calc(env(safe-area-inset-left) + 16px);
+  padding-right: calc(env(safe-area-inset-right) + 16px);
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 12px;
+  background: #fafafa;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.calendar-page h1 { width: 100%; text-align: center; margin: 0 0 12px; }
+
+/* ========== 레이아웃 ========== */
+.calendar-layout { display: flex; flex-direction: column; gap: 20px; }
+
+/* 데스크톱: 좌/우 2열 + 동일 높이 */
+@media (min-width: 1024px) {
+  :root { --panelH: calc(100vh - 240px); }   /* 필요시 240만 미세 조정 */
+
+  .calendar-layout {
+    display: grid;
+    grid-template-columns: minmax(360px, 420px) 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .calendar-wrapper,
+  .schedule-panel {
+    height: var(--panelH);
+    box-sizing: border-box;
+  }
+}
+
+/* 좌측 묶음(달력 + 이달의 할 일) */
+.calendar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* 달력과 리스트 간 간격 */
+  box-sizing: border-box;
+}
+
+/* 우측 패널(요약표) */
+.schedule-panel {
+  margin-top: 24px;
+  padding: 16px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: #fff;
+  height: calc(100vh - 240px); /* 모바일·태블릿도 내부 스크롤 */
+  overflow-y: auto;
+}
+@media (min-width: 1024px) { .schedule-panel { margin-top: 0; } }
+
+/* 좌측 리스트(이달의 할 일): 남은 높이 채우고 내부 스크롤 */
+.month-todos {
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px 12px;
+  width: 100%;
+  max-width: 560px;
+  box-sizing: border-box;
+
+  /* 달력 높이에 맞춰 남은 공간만 차지 */
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ========== 버튼 ========== */
+.btn-group { margin-top: 12px; display: flex; justify-content: center; gap: 8px; }
+.btn, .btn-group button {
+  background: #555 !important; color: #fff; border: 1px solid #444;
+  border-radius: 6px; padding: 8px 12px; font-size: 14px; line-height: 1;
+  cursor: pointer; transition: background .2s ease;
+}
+.btn:hover, .btn-group button:hover { background: #333 !important; }
+
+/* 우측 패널 헤더(제목 + 액션) */
+.panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.panel-header h2 { margin: 0; font-size: 20px; font-weight: 700; }
+
+/* ========== 요약 테이블 ========== */
+.summary-table { width: 100%; margin-top: 16px; border-collapse: collapse; }
+.summary-table td { padding: 8px 12px; border: 1px solid #555; }
+
+/* ========== react-calendar 기본 ========== */
+.react-calendar {
+  border: 2px solid #333; border-radius: 12px; overflow: hidden;
+  width: 100%; max-width: 560px; font-family: inherit; background: #fff;
+}
+.react-calendar__navigation { border-bottom: 1px solid #333; padding: 4px 8px; }
+.react-calendar__navigation button { min-width: 32px; }
+
+.react-calendar__month-view__weekdays__weekday,
+.react-calendar__month-view__days__day {
+  border-right: 1px solid #555; border-bottom: 1px solid #555;
+  box-sizing: border-box; margin: 0; padding: .6rem 0;
+}
+.react-calendar__month-view__weekdays__weekday:nth-child(7),
+.react-calendar__month-view__days__day:nth-child(7n) { border-right: none; }
+
+.react-calendar__month-view__weekdays__weekday {
+  background: #fafafa; text-align: center; font-weight: 600;
+}
+
+.react-calendar__tile { background: #fff; position: relative; }
+.react-calendar .react-calendar__tile:enabled:hover,
+.react-calendar .react-calendar__tile:enabled:focus { background: #fff !important; color: inherit !important; }
+
+.react-calendar .react-calendar__tile--now { background: #bcbcbc !important; color: inherit !important; }
+.react-calendar .react-calendar__tile--active,
+.react-calendar .react-calendar__tile--active:enabled:hover,
+.react-calendar .react-calendar__tile--active:enabled:focus { background: #555 !important; color: #fff !important; }
+
+.react-calendar__tile.sat, .react-calendar .sat { color: #1976d2; font-weight: 600; }
+.react-calendar__tile.sun, .react-calendar .sun { color: #b92434; font-weight: 600; }
+.react-calendar__month-view__days__day--neighboringMonth { color: #bdbdbd !important; font-weight: 400 !important; }
+
+/* ========== 공휴일 표시 ========== */
+.holiday-tile { color: #d12; font-weight: 600; position: relative; background: rgba(209,18,18,.08); }
+.holiday-start { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+.holiday-end   { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+.holiday-single{ border-radius: 10px; }
+
+/* 항상 자리 차지하는 공휴일 전용 행 */
+.holiday-row {
+  height: 16px; width: 100%;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px; pointer-events: none;
+}
+
+/* 미니 배지(고스트 태그 느낌) */
+:root {
+  --holiday: #c84a3a;
+  --holiday-ink: #7a2e28;
+}
+.holiday-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 2px 8px 1px;
+  font-size: 8px; font-weight: 600; letter-spacing: -0.1px;
+  color: var(--holiday-ink);
+  background: rgba(200,74,58,.06);
+  border: 1px solid rgba(200,74,58,.28);
+  border-radius: 999px;
+  max-width: calc(100% - 8px);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  pointer-events: auto;
+}
+.holiday-tile { background: rgba(200,74,58,.03); }
+.react-calendar__tile--active .holiday-badge {
+  border-color: rgba(255,255,255,.35);
+  color: #fff; background: rgba(255,255,255,.18);
+}
+
+/* ========== 계획/할일 마커 ========== */
+/* 계획 있음: 날짜 아래 밑줄 */
+.react-calendar__tile.has-plan abbr::after {
+  content: "";
+  display: block;
+  width: 72%; height: 3px; margin: 2px auto 0;
+  background: #8e8e8e; border-radius: 2px;
+}
+.react-calendar__tile.has-plan:hover abbr::after { background: #5c5c5c; }
+
+/* TODO 마감일: 우측 상단 파란 점 */
+.todo-dot {
+  position: absolute;
+  top: 6px; right: 8px;
+  width: 8px; height: 8px;
+  background: #3b82f6;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #fff;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ========== 이달의 할 일 리스트 내부 ========== */
+.month-todos__title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+.month-todos__empty { font-size: 13px; color: #777; padding: 8px 0; }
+.month-todos__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.month-todo {
+  display: grid;
+  grid-template-columns: 92px 64px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.month-todo__date { font-size: 12px; color: #666; }
+.month-todo__title { font-size: 13px; color: #222; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.month-todo__dday {
+  font-size: 11px; line-height: 1; padding: 3px 6px; border-radius: 999px;
+  background: #e9f0ff; color: #194b9b; border: 1px solid rgba(25,75,155,.15); text-align: center;
+}
+.month-todo__dday.is-today { background: #efe7ff; color: #4c3abf; border-color: rgba(76,58,191,.18); }
+.month-todo__dday.is-past  { background: #f5f5f5; color: #888; border-color: #e5e5e5; }
+
+/* 과거 잠금용 비활성 버튼 */
+.btn[disabled],
+.btn-group button[disabled] {
+  opacity: .45;
+  cursor: not-allowed !important;
+  filter: grayscale(20%);
+}
+.btn[disabled]:hover,
+.btn-group button[disabled]:hover {
+  background: #555 !important; /* hover 무효화 */
+}
+
+/* 달력 격자 기본 */
+.react-calendar__month-view__weekdays__weekday,
+.react-calendar__month-view__days__day {
+  border-right: 1px solid #555;
+  border-bottom: 1px solid #555;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.6rem 0;
+}
+.react-calendar__month-view__weekdays__weekday:nth-child(7),
+.react-calendar__month-view__days__day:nth-child(7n) {
+  border-right: none;
+}
+
+/* 날짜칸 공통 리셋 + 격자 강제 */
+.react-calendar__month-view__weekdays__weekday,
+.react-calendar__month-view__days__day {
+  margin: 0 !important;
+  border-right: 1px solid #555 !important;
+  border-bottom: 1px solid #555 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.react-calendar__month-view__weekdays__weekday:nth-child(7),
+.react-calendar__month-view__days__day:nth-child(7n) {
+  border-right: none !important;
+}
+.react-calendar__month-view__days .react-calendar__tile:nth-child(7n) {
+  border-right: none !important;
+}
+
+/* === 월간 좌/우 패널 높이 고정 + 내부 스크롤 안정화 === */
+
+/* 데스크톱일 때만 두 칼럼을 같은 키(height)로 맞추고,
+   스크롤은 내부(.month-todos / .schedule-panel)에서만 나도록 */
+@media (min-width: 1024px) {
+  :root { --panelH: calc(100vh - 240px); } /* 필요시 -240 값만 미세 조정 */
+
+  .calendar-layout { 
+    display: grid;
+    grid-template-columns: minmax(360px, 420px) 1fr;
+    gap: 32px;
+    align-items: stretch;              /* 두 칼럼 동일 높이 */
+  }
+
+  /* 왼쪽 묶음(달력 + 이달의 할 일) 자체는 고정 높이, 내부만 스크롤 */
+  .calendar-wrapper {
+    height: var(--panelH);
+    min-height: 0;                     /* grid 아이템 수축 허용(중요) */
+    overflow: hidden;                  /* 내부 리스트만 스크롤되게 래퍼는 숨김 */
+    box-sizing: border-box;
+  }
+  .calendar-wrapper > .react-calendar {
+    flex: 0 0 auto;                    /* 달력 높이만큼만 차지 */
+  }
+  .month-todos {
+    flex: 1 1 0%;
+    min-height: 0;                     /* 내부 스크롤이 작동하도록 */
+    overflow: auto;                    /* <- 리스트만 스크롤 */
+    max-height: none;                  /* 고정 max-height 제거 */
+    scrollbar-gutter: stable both-edges;
+  }
+
+  /* 오른쪽 패널도 같은 높이 + 내부 스크롤 */
+  .schedule-panel {
+    height: var(--panelH) !important;  /* 기존 calc(100vh - 240px)보다 우선 */
+    min-height: 0;
+    overflow: auto;
+    scrollbar-gutter: stable both-edges;
+    margin-top: 0;                     /* 2열일 때 상단 맞춤 */
+  }
+}
+
+/* 모바일/태블릿(한 열)에서는 높이 자동으로: 바깥은 자동, 내부 스크롤은 유지 */
+@media (max-width: 1023px) {
+  .calendar-wrapper,
+  .schedule-panel {
+    height: auto;
+    min-height: 0;
+  }
+  .month-todos {
+    max-height: 40vh;                  /* 모바일은 너무 길면 40vh에서 스크롤 */
+    overflow: auto;
+  }
+}
+
+/* 가로 흔들림 방지(스크롤바 생겨도 폭 고정) */
+.month-todos,
+.schedule-panel {
+  scrollbar-gutter: stable both-edges;
+}
+
+/* grid/flex 컨텍스트에서 자식이 잘리는 이슈 예방 */
+.calendar-wrapper,
+.schedule-panel { min-width: 0; }
+
+/* === 달력만 컴팩트 사이즈로 (JSX 수정 없음) === */
+
+/* 1) Chrome/Edge 등: zoom 지원 시 */
+@supports (zoom: 1) {
+  .calendar-wrapper .react-calendar {
+    /* 수치만 바꿔서 원하는 만큼 줄이기 (0.85 ~ 0.95 추천) */
+    zoom: 0.86;
+  }
+}
+
+/* 2) Firefox 등: zoom 미지원 폴백 */
+@supports not (zoom: 1) {
+  .calendar-wrapper .react-calendar { 
+    /* 전체 비율 축소 효과 */
+    font-size: 14px;            /* 기본 16px -> 14px */
+    max-width: 520px;           /* 가로폭도 살짝 줄이기 */
+    margin: 0 auto;
+  }
+
+  /* 네비게이션 높이/여백 축소 */
+  .react-calendar__navigation { height: 36px; margin-bottom: 6px; }
+  .react-calendar__navigation button { min-width: 28px; padding: 4px 6px; font-size: 14px; }
+
+  /* 요일 헤더(월~일) 줄이기 */
+  .react-calendar__month-view__weekdays__weekday { 
+    font-size: 12px; padding: 4px 0;
+  }
+
+  /* 날짜 타일 높이 축소 (필요 시 숫자만 조절) */
+  .react-calendar__tile { 
+    height: 48px;           /* ← 52~56px에서 48px로 */
+    padding: 0 !important; 
+    line-height: 1.1;
+  }
+  .react-calendar__tile abbr { font-size: 13px; }
+}
+
+/* 3) 큰 화면에서 한 단계 더 작게 하고 싶으면(선택) */
+@media (min-width: 1200px) {
+  @supports (zoom: 1) {
+    .calendar-wrapper .react-calendar { zoom: 0.80; }  /* 원하는 값으로 */
+  }
+  @supports not (zoom: 1) {
+    .calendar-wrapper .react-calendar { max-width: 500px; }
+    .react-calendar__tile { height: 46px; }
+  }
+}

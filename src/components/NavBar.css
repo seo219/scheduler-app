@@ -1,0 +1,51 @@
+/* src/components/NavBar.css */
+.nav-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background-color: var(--bg-color);
+  display: flex;
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+  color: #555;                 /* 무채색 기본 텍스트 (시유) */
+  background-color: #fff;      /* 추가 */
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+  flex-direction: column;      /* 추가 */
+}
+
+/* 기본 호버 시 배경 살짝 회색 */
+.nav-item:hover {
+  /* background: rgba(0,0,0,0.05); */ /* 삭제 */
+  background-color: #f0f0f0;   /* 무채색 hover (시유) */
+}
+
+/* 클릭(포커스) 시 배경 조금 더 진하게 */
+.nav-item:active,
+.nav-item:focus {
+  background: #e0e0e0;         /* 무채색 active (시유) */
+  outline: none;
+}
+
+/* 현재 선택된(active) 탭 배경과 색상 변경 */
+.nav-item.active {
+  background: #d9d9d9;         /* 무채색 active 배경 (시유) */
+  color: #222;                 /* 무채색 텍스트 (시유) */
+}
+
+.nav-item svg {
+  width: 32px;
+  height: 32px;
+}
+
+.nav-label {
+  font-size: 13px;
+} /* 추가 */

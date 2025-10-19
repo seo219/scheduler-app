@@ -1,0 +1,73 @@
+/* HolidayScheduleForm.css */
+.holiday-form {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fafafa;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.holiday-form h3 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.holiday-form .field {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.holiday-form .field label {
+  margin-right: 8px;
+}
+
+.holiday-form .field select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+}
+
+.holiday-form .buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* 🏆 버튼 스타일: 진한 회색(무채색)으로 변경 및 !important 적용 */
+.holiday-form .buttons button {
+  padding: 8px 14px;
+  border: 1px solid #555 !important; /* 진한 회색 테두리 강제 적용 */
+  border-radius: 8px;
+  background: #444 !important; /* 진한 회색 배경 강제 적용 */
+  color: #ffffff !important; /* 글자색 흰색 강제 적용 */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.holiday-form .buttons button:hover {
+  background: #222 !important; /* hover 시 더 진하게 강제 적용 */
+}
+
+.holiday-form .holiday-preview {
+  margin-top: 20px;
+}
+
+.holiday-form .holiday-preview h4 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.holiday-form .holiday-preview ul {
+  list-style: none;
+  padding: 0;
+}
+
+.holiday-form .holiday-preview li {
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
