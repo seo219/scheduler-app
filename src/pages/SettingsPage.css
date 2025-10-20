@@ -36,127 +36,6 @@
 
 .section {
   margin-bottom: 32px;
-}
-
-.section h2 {
-  margin-bottom: 12px;
-}
-
-.form-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.form-group label {
-  width: 120px;
-  font-weight: 900; 
-  font-size: 1rem;  
-}
-
-.form-group select,
-.form-group input {
-  flex: 1;
-  padding: 6px 8px;
-  border: 1px solid black; /* 검정 실선 */
-  border-radius: 4px;
-}
-
-/* 로그인 계정 텍스트 */
-.account-info {
-  font-family: var(--font-family);
-  font-size: 1rem;
-  color: #333;
-}
-
-/* "로그인 계정:" 부분만 글자 크기/굵기 조정 */
-.account-info .account-label {
-  font-weight: 900; 
-  font-size: inherit; 
-  margin-right: 4px;
-}
-
-/* 버튼 공통 스타일 */
-.btn {
-  display: block;
-  width: 100%;
-  margin: 8px 0;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* 로그아웃 버튼 */
-.btn.logout {
-  background: #555;
-  color: white;
-  margin-top: 32px;
-}
-.btn.logout:hover {
-  background: #333;
-}
-
-/* 비밀번호 재설정 버튼 */
-.btn.reset {
-  background: #777;
-  color: white;
-}
-.btn.reset:hover {
-  background: #555;
-}
-
-/* 계정 삭제 버튼 */
-.btn.delete-account {
-  background: #ef1616 !important;
-  color: white;
-}
-.btn.delete-account:hover {
-  background: #ab2626!important;
-}
-
-.btn:hover {
-  opacity: 0.9;
-}
-
-/* src/pages/SettingsPage.css */
-
-.settings-page {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 16px;
-  width: 100%;
-  border-radius: 12px;
-  background: #fafafa;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.settings-page h1 {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.setting-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.setting-item .label {
-  font-weight: bold;
-}
-
-.setting-item .value {
-  color: #555;
-}
-
-.section {
-  margin-bottom: 32px;
   width: 100%;
   /* 텍스트 정렬은 왼쪽 정렬을 기본으로 합니다. */
   text-align: left !important; 
@@ -276,4 +155,123 @@
 /* 버튼 hover 효과 공통 */
 .btn:hover {
   opacity: 0.9;
+}
+
+/* --- 반응형 복구: 기본(데스크탑은 유연 유지) --- */
+.section {
+  margin-bottom: 32px;
+  width: 100%;
+  text-align: left;
+}
+
+/* 제목은 콘텐츠 흐름에 맡기고 고정폭 제거 */
+.section h2 {
+  margin-bottom: 12px;
+  width: auto;
+  margin: 0 0 12px 0;
+  text-align: left;
+}
+
+/* account-info도 유연하게 */
+.account-info {
+  font-family: var(--font-family);
+  font-size: 1rem;
+  color: #333;
+  width: auto;
+  display: block;
+  margin: 0 0 8px 0;
+  text-align: left;
+}
+
+/* 버튼 그룹 컨테이너는 중앙 정렬 유지하되 내부 버튼은 반응형 */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+}
+
+/* 폼 그룹: 기본은 가로(라벨+입력)지만, 좁은 화면에선 세로로 쌓음 */
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  width: 100%;
+  gap: 8px;
+}
+.form-group label {
+  width: 120px;
+  font-weight: 900;
+  font-size: 1rem;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+/* 입력/셀렉트: 가로로 늘어나도록 */
+.form-group select,
+.form-group input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid black;
+  border-radius: 4px;
+  min-width: 0; /* flex overflow 방지 */
+  box-sizing: border-box;
+}
+
+/* 버튼: 기본은 100% 너비(컨테이너에 맞춤), 데스크탑에서 최대 너비 제어 */
+.btn {
+  display: block;
+  width: 100%;
+  max-width: 320px; /* 데스크탑에서는 너무 커지지 않게 제한 */
+  margin: 8px auto;
+  height: 40px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+/* 버튼 색상은 기존과 동일 */
+.btn.logout { background: #555; color: white; margin-top: 32px; }
+.btn.reset  { background: #777; color: white; }
+.btn.delete-account { background: #ef1616; color: white; }
+.btn:hover { opacity: 0.9; }
+
+/* --- 모바일 전용: 화면 폭이 480px 이하이면 폼 레이아웃을 세로로 바꿈 --- */
+@media (max-width: 480px) {
+  .settings-page {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .form-group {
+    flex-direction: column;
+    align-items: stretch;
+    margin: 8px 0;
+  }
+
+  .form-group label {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+
+  .button-group {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .btn {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* 섹션 제목은 폰트 크기 조정 가능 (선택) */
+  .section h2 {
+    font-size: 1rem;
+  }
 }
