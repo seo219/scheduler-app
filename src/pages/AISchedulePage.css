@@ -1,9 +1,9 @@
-/* src/pages/AISchedulePage.css — v4.2 (match look #2) */
+/* src/pages/AISchedulePage.css — v5.2 (buttons align with boards) */
 
 /* ===== Root scale ===== */
 :root{
-  --ai-time-col: 84px;   /* 시간 컬럼 폭(조금 더 슬림) */
-  --ai-row-h:    36px;   /* 한 줄 높이(조금 더 촘촘) */
+  --ai-time-col: 84px;
+  --ai-row-h: 36px;
 }
 
 /* ===== Page ===== */
@@ -29,31 +29,40 @@
 .topbar .left{ justify-self: start; }
 .topbar .right{ justify-self: end; }
 
-/* ===== Buttons (톤 통일) ===== */
+/* ===== Buttons 기본 스타일 ===== */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:6px;
   height:36px; padding:0 14px; border-radius:10px;
   border:1px solid #d1d5db;
-  background:#6b7280; color:#fff;         /* 기본 회색 배경 + 흰 글자 */
+  background:#6b7280; color:#fff;
   cursor:pointer; user-select:none;
+  width:auto !important;
+  min-width:auto !important;
+  flex:0 0 auto !important;
+  font-weight:400;
 }
 .btn:hover{ filter:brightness(.98); }
 .btn:active{ transform:translateY(1px); }
 
-.btn.primary{ background:#111827; border-color:#111827; color:#fff; } /* 일정에 반영 = 진한 검정 */
-.btn.ghost  { background:#6b7280; border-color:#6b7280; color:#fff; } /* 취소 = 중간 회색 */
+.btn.primary{ background:#111827; border-color:#111827; color:#fff; }
+.btn.ghost  { background:#6b7280; border-color:#6b7280; color:#fff; }
+/* 🚨 취소 버튼 빨간색 스타일 */
+.btn.cancel { 
+    background: #dc2626 !important; 
+    border-color: #dc2626 !important; 
+    color: #fff !important; 
+}
+/* ------------------------------------------- */
 .btn.sm     { height:30px; padding:0 10px; font-size:12px; border-radius:8px; }
-.btn.xs     { height:28px; padding:0 8px;  font-size:12px; border-radius:8px; }
-
-/* 활성/비활성 토글 */
+.btn.xs     { height:28px; padding:0 8px; font-size:12px; border-radius:8px; }
+.btn.micro{
+  height:24px !important; line-height:24px !important;
+  padding:0 10px !important; font-size:12px !important;
+  border-radius:9999px !important;
+  width:auto !important; min-width:auto !important;
+}
 .btn.on  { background:#4b5563; border-color:#4b5563; color:#fff; }
 .btn.off { background:#9ca3af; border-color:#9ca3af; color:#fff; }
-
-/* 헤더용 초소형 칩 버튼(② 모양) */
-.btn.micro{
-  height:22px; padding:0 8px; font-size:12px;
-  border-radius:9999px; line-height:22px;
-}
 
 /* ===== Two boards ===== */
 .boards{
@@ -62,411 +71,228 @@
 }
 @media (max-width:980px){ .boards{ grid-template-columns:1fr; } }
 
+/* 🚨 시간표 카드 외부 프레임 굵게 (2px) 변경 */
 .plan-card{
-  background:#fff; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden;
+  background:#fff; 
+  border:2px solid #000 !important; /* 굵은 검은색 실선 (2px) */
+  border-radius:12px; overflow:hidden;
   box-shadow:0 1px 2px rgba(0,0,0,.04);
   display:flex; flex-direction:column; min-width:0; height:560px;
 }
 
-/* 헤더(제목 + 칩 버튼) */
+/* 헤더 */
 .plan-head{
   position:sticky; top:0; z-index:1;
-  display:grid; grid-template-columns:var(--ai-time-col) 1fr; gap:10px;
-  background:#f8f9fc; border-bottom:1px solid #eef1f6;
+  display:grid; grid-template-columns:var(--ai-time-col) 1fr;
+  gap:10px;
+  background:#f8f9fc; 
+  border-bottom:2px solid #000 !important; /* 헤더 하단 구분선 굵게 (2px) 변경 */
   padding:10px 12px; font-weight:700; color:#222;
 }
-.head-inline{ display:flex; align-items:center; gap:8px; white-space:nowrap; }
-.head-title { font-weight:700; }
-.plan-head .btn.micro{ margin-left:6px; }  /* 제목 오른쪽에 꼭 붙도록 */
+.left-plan-titles{
+  display:flex; align-items:center; justify-content:space-between; flex-grow:1; min-width:0;
+}
+.left-plan-titles .title-group{
+  display:flex; gap:10px; align-items:center; flex-shrink:1; min-width:0;
+}
+.left-plan-titles .title-group .head-title:first-child{ font-weight:800 !important; }
+/* 🚨 "시간 비우기 설정 (클릭)" 텍스트 굵기를 400으로 변경 */
+.left-plan-titles .title-group .head-title{ font-weight:800 !important; white-space:nowrap; } 
+
+.left-plan-titles .btn.micro{ flex-shrink:0; margin-left:10px; }
+.head-inline{ 
+    /* 🚨 수정: 버튼 오른쪽 정렬을 위해 justify-content: space-between 적용 */
+    display:flex !important; 
+    align-items:center !important; 
+    gap:8px; 
+    white-space:nowrap; 
+    justify-content: space-between !important;
+    flex-grow: 1 !important; 
+}
+.head-title{ font-weight:700; }
+.plan-head .btn.micro{ 
+    margin-left:6px;
+    flex-shrink: 0 !important; 
+    order: 999; 
+}
 
 /* 본문 스크롤 */
 .plan-body{ flex:1 1 auto; overflow:auto; scrollbar-gutter:stable both-edges; }
 
 /* 행 */
+/* 🚨 시간표 행 구분선 굵게 (1px 유지) 변경 */
 .plan-row{
   display:grid; grid-template-columns:var(--ai-time-col) 1fr; align-items:center;
   min-height:var(--ai-row-h); padding:8px 12px;
-  border-bottom:1px solid #f2f4f7; font-size:14px;
+  border-bottom:1px solid #000 !important; 
+  font-size:14px;
 }
-.plan-row:last-child{ border-bottom:0; }
+.plan-row:last-child{ border-bottom:0 !important; } 
 
-.plan-time{
-  color:#6b7280; font-variant-numeric:tabular-nums; font-feature-settings:"tnum";
-}
-.plan-what{
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-  border-radius:8px; padding:4px 6px;
-}
+.plan-time{ color:#6b7280; font-variant-numeric:tabular-nums; font-feature-settings:"tnum"; }
+.plan-what{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; border-radius:8px; padding:4px 6px; }
 
-/* 상태 컬러(② 톤) */
+/* 상태 컬러 */
 .plan-row.is-wake  .plan-what{ font-weight:700; }
-.plan-row.is-fixed .plan-what{ background:#f6f7f9; color:#6a7688; } /* 고정 */
-.plan-row.is-meal  .plan-what{ background:#fff7ed; }               /* 식사 */
-.plan-row.is-sleep .plan-what{ background:#f1f5f9; }               /* 수면 */
-.plan-row.is-blocked .plan-what{
-  background:#fff1f1; border:1px solid #ffd2d2; color:#b91c1c; text-align:center;
-}
-.plan-row.has-preview .plan-what{
-  background:#eef6ff; border:1px solid #e5efff;                   /* 미리보기 파랑 */
-}
+.plan-row.is-fixed .plan-what{ background:#f6f7f9; color:#6a7688; }
+.plan-row.is-meal  .plan-what{ background:#fff7ed; }
+.plan-row.is-sleep .plan-what{ background:#f1f5f9; }
+.plan-row.is-blocked .plan-what{ background:#fff1f1; border:1px solid #ffd2d2; color:#b91c1c; text-align:center; }
+.plan-row.has-preview .plan-what{ background:#eef6ff; border:0 !important; }
 
 .plan-row.marker{ background:#fafafa; font-weight:700; }
 
-/* ===== Section: 대상 할 일 ===== */
+/* 대상 할 일 */
 .section-head{
-  display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px;
-  margin:4px 0 10px;
+  display:flex !important; justify-content:center !important; align-items:center !important;
+  flex-wrap:nowrap !important; gap:12px !important; margin:10px 0 12px !important;
 }
-.section-title{ margin:0; font-size:18px; font-weight:700; }
+.section-head .section-title{
+  margin:0 !important; line-height:1 !important; white-space:nowrap !important;
+}
+.section-head .btn{
+  width:auto !important; min-width:auto !important; flex:0 0 auto !important;
+  display:inline-flex !important; height:30px !important; padding:0 12px !important;
+  font-size:13px !important; border-radius:10px !important;
+}
 
-/* ===== Todo pills ===== */
-.todo-pills{ display:flex; flex-direction:column; gap:10px; }
+/* Todo pills */
+.todo-pills{
+    display:flex; flex-direction:column;
+    gap:3px !important; 
+}
 .todo-pills.warn .pill{ background:#fff7f7; border-color:#ffdede; }
 
+/* 🚨 할 일 목록 프레임 굵게 (2px) 변경 및 Flexbox 설정 유지 */
 .pill{
-  background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:10px 14px;
+  background:#fff; 
+  border:2px solid #000 !important; /* 굵은 검은색 실선 (2px) 적용 */
+  border-radius:14px;
+  /* 패딩 최소화 */
+  padding:2px 14px !important; 
   box-shadow:0 1px 2px rgba(0,0,0,.03);
-  display:grid; grid-template-columns:minmax(0,1fr) auto; grid-auto-rows:auto;
-  row-gap:8px; column-gap:12px; align-items:center;
+  
+  /* Flexbox 컨테이너 */
+  margin-left: 2px !important; 
+  display:flex !important; 
+  align-items:center !important; /* 세로 중앙 정렬 */
+  justify-content: space-between !important; /* 헤더와 컨트롤 영역 좌우 분리 */
+  gap: 12px; /* Flex 항목 간 간격 */
+  min-height: 40px !important; /* 항목 최소 높이 지정 */
 }
-.pill.is-first{ border-left:3px solid #111827; padding-left:12px; }
+/* 🚨 왼쪽 테두리 공간 확보 및 is-first 처리 */
+.pill.is-first{ 
+  border-left:2px solid #000 !important; 
+  padding-left:14px !important; 
+} 
 .pill.disabled{ opacity:.55; filter:grayscale(.12); }
 
-/* 헤더(제목 라인) */
-.pill-head{ grid-column:1/-1; display:flex; align-items:center; gap:12px; }
-.pill-left{ display:flex; align-items:center; gap:8px; min-width:0; }
+.pill-head{ 
+  /* Flexbox 하에서 1열 역할 (왼쪽) */
+  flex-grow: 1; /* 남은 공간 모두 차지 */
+  display:flex; 
+  align-items:center !important; /* 내부 요소 중앙 정렬 */
+  gap:12px; 
+  margin:4px 0 !important; 
+  padding: 0 !important;
+}
+.pill-left{ 
+    display:flex; 
+    align-items:center !important; /* 내부 요소 중앙 정렬 */
+    gap:8px; 
+    min-width:0; 
+}
 .pill-title{ font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-
-/* 번호: ‘텍스트’ 느낌 강제 (동그라미 뱃지 방지) */
-.pill-idx{
-  display:inline-block; min-width:0;
-  background:transparent !important; border:0 !important; box-shadow:none !important;
-  color:#6b7280; font-weight:700; font-size:12px; margin-right:6px; padding:0 !important;
-}
-
-/* 제목 옆 D-칩 & 날짜 칩 */
+.pill-idx{ display:inline-block; min-width:0; background:transparent !important; border:0 !important; box-shadow:none !important; color:#6b7280; font-weight:700; font-size:12px; margin-right:6px; padding:0 !important; }
 .pill-meta-inline{ display:flex; align-items:center; gap:8px; margin-left:12px; }
-.chip{
-  display:inline-flex; align-items:center; height:22px; line-height:22px;
-  padding:0 8px; border-radius:9999px; font-size:12px;
-}
+.chip{ display:inline-flex; align-items:center; height:22px; line-height:22px; padding:0 8px; border-radius:9999px; font-size:12px; }
 .chip.fill   { background:#4b5563; color:#fff; font-weight:600; }
 .chip.outline{ background:#fff; color:#6b7280; border:1px solid #e5e7eb; }
 
-/* 우측 컨트롤(활성/최소/최대) */
 .pill-controls{
-  grid-column:2; justify-self:end;
-  display:flex; align-items:center; gap:6px;
-}
-.pill-controls .btn{ width:auto!important; flex:0 0 auto!important; }
-.pill-controls label{ display:flex; align-items:center; gap:6px; font-size:12px; color:#6b7280; }
-.pill-controls input{
-  height:28px; padding:4px 6px; border:1px solid #d1d5db; border-radius:8px;
-  width:72px;
+  /* Flexbox 하에서 2열 역할 (오른쪽) */
+  flex-shrink: 0;
+  display:flex !important;
+  align-items:center !important; /* 내부 요소 중앙 정렬 */
+  gap:6px !important;
+  margin:0 !important;
+  padding: 0 !important;
+  min-height: 28px !important; 
 }
 
-/* 스크롤바 */
+/* label 및 input 스타일 (여백 압축 및 중앙 정렬) */
+.pill-controls label {
+    display: flex !important; 
+    align-items: center !important; 
+    gap: 4px !important; 
+    font-size: 13px !important; 
+    line-height: 1 !important; 
+    white-space: nowrap !important;
+    margin: 0 !important; 
+    padding: 0 !important; 
+}
+.pill-controls label, 
+.pill-controls input[type="number"], 
+.pill-controls .btn {
+  vertical-align: middle !important; 
+}
+
+.pill-controls input[type="number"] {
+    height: 26px !important; 
+    padding: 0 4px !important;
+    font-size: 13px !important;
+    box-sizing: border-box !important; 
+    border-radius: 6px !important; 
+    min-width: 60px !important;
+    margin: 0 !important; 
+}
+
+.pill-controls .btn{ 
+    height:26px !important; 
+    padding:0 10px !important; 
+    font-size:12px !important; 
+    border-radius:8px !important; 
+    width:auto !important; 
+    min-width:auto !important; 
+}
+
+/* Scrollbar */
 .plan-body::-webkit-scrollbar{ width:8px; height:8px; }
 .plan-body::-webkit-scrollbar-thumb{ background:#cbd5e1; border-radius:8px; }
 .plan-body::-webkit-scrollbar-track{ background:transparent; }
 
-/* 기타 */
-.swap-selected{ outline:2px solid #2563eb; outline-offset:-2px; }
-
-/* --- AISchedulePage v4.3: quick override patch --- */
-
-/* 1) 좌/우 보드 높이 맞추기 */
-.ai-schedule .boards .plan-card{
-  height: 600px !important;
-}
-@media (max-width: 980px){
-  .ai-schedule .boards .plan-card{
-    height: 560px !important;
-  }
-}
-
-/* 2) '대상 할 일 (n)' 라인: 한 줄 중앙 정렬 + 버튼 소형화 */
-.ai-schedule .section-head{
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 10px !important;
-  margin: 12px 0 12px !important;
-}
-.ai-schedule .section-head .section-title{
-  margin: 0 !important;
-  line-height: 1 !important;
-}
-.ai-schedule .section-head .btn{
-  height: 26px !important;
-  padding: 0 10px !important;
-  font-size: 12px !important;
-  border-radius: 8px !important;
-}
-
-/* 3) 첫 번째 할 일 카드의 왼쪽 검은 라인 제거 */
-.ai-schedule .pill.is-first{
-  border-left: 0 !important;
-  padding-left: 14px !important;
-}
-
-/* (옵션) 카드 내부 토글 버튼도 살짝 더 작게 */
-.ai-schedule .pill-controls .btn.xs{
-  height: 24px !important;
-  padding: 0 8px !important;
-  font-size: 12px !important;
-  border-radius: 8px !important;
-}
-/* --- AISchedulePage v4.3.2: section-head button fix & micro size --- */
-
-/* ❶ '대상 할 일' 줄: 버튼이 100%로 늘어나는 문제 강제 방지 + 중앙 한 줄 정렬 */
-.ai-schedule .section-head{
-  display:flex !important;
-  justify-content:center !important;
-  align-items:center !important;
-  flex-wrap:nowrap !important;
-  gap:12px !important;
-  margin:12px 0 12px !important;
-}
-.ai-schedule .section-head .section-title{
-  margin:0 !important; line-height:1 !important;
-}
-.ai-schedule .section-head .btn{
-  width:auto !important;
-  min-width:auto !important;
-  flex:0 0 auto !important;
-  display:inline-flex !important;
-  height:26px !important;
-  padding:0 10px !important;
-  font-size:12px !important;
-  border-radius:8px !important;
-}
-
-/* ❷ 상단 보드 헤더의 '차단 초기화' 칩 버튼, 살짝 크게 */
-.ai-schedule .plan-head .btn.micro{
-  height:24px !important;
-  line-height:24px !important;
-  padding:0 10px !important;
-  border-radius:9999px !important;
-  font-size:12px !important;
-}
-
-/* ❸ (유지) 좌/우 보드 동일 높이 */
+/* Boards 동일 높이 */
 .ai-schedule .boards .plan-card{ height:600px !important; }
-@media (max-width:980px){
-  .ai-schedule .boards .plan-card{ height:560px !important; }
+@media (max-width:980px){ .ai-schedule .boards .plan-card{ height:560px !important; } }
+
+/* ===== v5.2 하단 버튼 좌우 계획표 폭과 정렬 ===== */
+.ai-schedule .bottom-bar{
+  display:grid;
+  grid-template-columns:1fr 1fr; /* 좌/우 버튼 각 1fr */
+  gap:18px;
+  width:100%;
+  max-width:980px;
+  margin:20px auto 0;
+  padding:0 0 20px 0;
+  box-sizing:border-box;
 }
-/* ===== AISchedulePage v4.4 – final polish patch ===== */
-
-/* 1) 좌/우 보드 높이 동일 고정 + 스크롤 일관 */
-.ai-schedule .boards .plan-card{ height: 600px !important; }
-@media (max-width: 980px){ .ai-schedule .boards .plan-card{ height: 560px !important; } }
-.ai-schedule .plan-body{ overflow:auto !important; scrollbar-gutter: stable both-edges !important; }
-
-/* 2) 섹션 헤더: 한 줄 중앙 정렬 + 버튼 크기 조금 키우기 */
-.ai-schedule .section-head{
-  display:flex !important; justify-content:center !important; align-items:center !important;
-  flex-wrap:nowrap !important; gap:12px !important; margin:10px 0 12px !important;
+.ai-schedule .bottom-bar .btn{
+  width:100% !important;   /* 각 버튼이 칸 전체 채우기 */
+  height:50px !important;
+  font-size:16px !important;
+  border-radius:10px;
+  min-width:130px;
+  flex:unset;              /* flex 제거 */
 }
-.ai-schedule .section-head .section-title{
-  margin:0 !important; line-height:1 !important; white-space:nowrap !important;
-}
-.ai-schedule .section-head .btn{
-  width:auto !important; min-width:auto !important; flex:0 0 auto !important;
-  height:30px !important; padding:0 12px !important; font-size:13px !important; border-radius:10px !important;
-}
-
-/* 3) 첫 번째 카드의 왼쪽 검은 라인 제거 유지 */
-.ai-schedule .pill.is-first{ border-left:0 !important; padding-left:14px !important; }
-
-/* 4) 상단 보드 헤더의 '차단 초기화' 칩을 제목 오른쪽 끝으로 */
-.ai-schedule .plan-head .head-inline{ display:flex !important; gap:8px !important; }
-.ai-schedule .plan-head .head-inline .btn.micro{
-  margin-left:auto !important;            /* 오른쪽 끝으로 밀기 */
-  height:26px !important; line-height:26px !important;
-  padding:0 10px !important; font-size:12px !important; border-radius:9999px !important;
-}
-
-/* 5) 미리보기 줄(파란색) 톤 유지(혹시 다른 CSS가 덮으면 강제) */
-.ai-schedule .plan-row.has-preview .plan-what{
-  background:#eef6ff !important; border:1px solid #e5efff !important;
-}
-
-/* 6) (선택) 보드-목록 간 간격 살짝 축소 */
-.ai-schedule .boards{ margin-bottom:12px !important; }
-
-/* --- AISchedulePage v4.5: pill header & controls on the same row --- */
-
-/* 카드 그리드: 좌(제목) / 우(컨트롤) 두 칼럼, 같은 행 배치 */
-.ai-schedule .pill{
-  display:grid !important;
-  grid-template-columns:minmax(0,1fr) auto !important;
-  grid-auto-rows:auto !important;
-  align-items:center !important; /* 같은 높이로 정렬 */
-  row-gap:8px !important;
-  column-gap:12px !important;
-}
-
-/* 제목 헤더는 1열 1행 */
-.ai-schedule .pill-head{
-  grid-column:1 / 2 !important;
-  grid-row:1 / 2 !important;
-  display:flex !important;
-  align-items:center !important;
-  gap:12px !important;
-  margin:0 !important;
-}
-
-/* 우측 컨트롤을 같은 행(1행) 오른쪽 칼럼으로 올림 */
-.ai-schedule .pill-controls{
-  grid-column:2 / 3 !important;
-  grid-row:1 / 2 !important;
-  justify-self:end !important;
-  align-self:center !important;
-  display:flex !important;
-  align-items:center !important;
-  gap:6px !important;
-  margin:0 !important;
-}
-
-/* 버튼 크기 살짝 컴팩트 (원하면 숫자 조절 가능) */
-.ai-schedule .pill-controls .btn{
-  height:26px !important; padding:0 10px !important; font-size:12px !important;
-  border-radius:8px !important; width:auto !important; min-width:auto !important;
-}
-
-/* 좁은 화면에서는 다시 2줄로(제목 위, 컨트롤 아래) 자동 개행 */
-@media (max-width: 640px){
-  .ai-schedule .pill{
-    grid-template-columns:1fr !important;
+@media (max-width:640px){
+  .ai-schedule .bottom-bar{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:16px;
   }
-  .ai-schedule .pill-head{
-    grid-column:1 / -1 !important; grid-row:1 !important;
+  .ai-schedule .bottom-bar .btn{
+    width:100% !important;
+    height:44px !important;
   }
-  .ai-schedule .pill-controls{
-    grid-column:1 / -1 !important; grid-row:2 !important; justify-self:start !important;
-  }
-}
-/* ===== AISchedulePage v4.7 — show only 6 rows (≈60min) ===== */
-
-/* 원하는 가시 줄 수와 한 줄 시각적 높이(패딩 포함)를 숫자로 조절 */
-.ai-schedule{
-  --visible-rows: 6;       /* ← 화면에 보일 줄 수 (6 = 60분) */
-  --row-visual:   44px;     /* ← 한 줄의 실제 보이는 높이(패딩 포함) */
-}
-
-/* 이전에 고정해둔 카드 높이(560/600px 등)를 무효화하고 자동 높이로 */
-.ai-schedule .boards .plan-card,
-.ai-schedule .boards .plan-card.plan-card{
-  height: auto !important;
-}
-
-/* 스크롤 영역(.plan-body)을 '6줄' 높이로 고정 → 나머지는 내부 스크롤 */
-.ai-schedule .plan-body{
-  height: calc(var(--visible-rows) * var(--row-visual)) !important;
-  overflow: auto !important;
-  scrollbar-gutter: stable both-edges !important;
-}
-
-/* 줄을 조금 컴팩트하게(원하면 수치 조절) */
-.ai-schedule .plan-row{
-  min-height: 30px !important;      /* 내부 컨텐츠 높이 */
-  padding: 6px 10px !important;      /* 위/아래 패딩 */
-  font-size: 13px !important;
-}
-/* 미세조정: 한 줄이 너무 크거나 작으면 --row-visual 값을 40~48px 사이로 바꿔보세요 */
-
-/* v4.7.1 — 6줄 높이 미세 조정 */
-.ai-schedule{
-  --visible-rows: 6;   /* 보일 줄 수 */
-  --row-visual: 42px;  /* 줄 한 칸의 보이는 높이(패딩 포함). 40~44 사이로 조절 */
-}
-
-.ai-schedule .plan-body{
-  height: calc(var(--visible-rows) * var(--row-visual)) !important;
-}
-
-/* 줄 자체를 더 컴팩트하게 하고 싶으면 ↓ */
-.ai-schedule .plan-row{ padding: 4px 10px !important; font-size: 13px !important; }
-
-.ai-schedule .boards{ margin-bottom: 6px !important; }
-.ai-schedule .section-head{ margin: 6px 0 6px !important; }
-
-/* ===== AISchedulePage v4.8 — L/R perfect height match (6 rows) ===== */
-
-/* 한곳에서 수치만 바꿔 미세조정 */
-.ai-schedule{
-  --visible-rows: 6;    /* 보일 줄 수 */
-  --row-visual:  42px;  /* 줄 한 칸의 보이는 높이(패딩 포함). 40~44px에서 조절 */
-  --head-h:      40px;  /* 보드 헤더 고정 높이. 38~42px에서 조절 */
-}
-
-/* 1) 헤더를 '딱 한 줄' + 고정 높이로 */
-.ai-schedule .plan-head{
-  height: var(--head-h) !important;
-  padding: 0 12px !important;                   /* 수직 패딩 0으로 고정 */
-  display: grid !important;
-  grid-template-columns: var(--ai-time-col) 1fr !important;
-  align-items: center !important;               /* 수직 가운데 정렬 */
-  white-space: nowrap !important;               /* 줄바꿈 금지 */
-  overflow: hidden !important;
-}
-.ai-schedule .plan-head .head-inline{
-  display: flex !important; align-items: center !important; gap: 8px !important;
-  min-width: 0 !important; overflow: hidden !important;
-}
-.ai-schedule .plan-head .head-title{
-  white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;
-}
-.ai-schedule .plan-head .btn.micro{
-  margin-left: auto !important;                 /* 오른쪽 끝으로 */
-  height: 24px !important; line-height: 24px !important;
-  padding: 0 10px !important; font-size: 12px !important; border-radius: 9999px !important;
-}
-
-/* 2) 본문은 '정확히 6칸' 높이로 고정 (나머지는 내부 스크롤) */
-.ai-schedule .plan-body{
-  height: calc(var(--visible-rows) * var(--row-visual)) !important;
-  overflow: auto !important;
-  scrollbar-gutter: stable both-edges !important;
-}
-
-/* 3) 카드 전체 높이도 두 카드가 동일하게 계산되도록(헤더+본문) */
-.ai-schedule .boards .plan-card{
-  height: calc(var(--head-h) + (var(--visible-rows) * var(--row-visual))) !important;
-}
-
-/* 4) 줄 자체도 컴팩트(필요 시 숫자만 살짝 조정) */
-.ai-schedule .plan-row{
-  min-height: 28px !important;
-  padding: 6px 10px !important;
-  font-size: 13px !important;
-}
-
-/* v4.9 — Full-row highlight (잘림 방지) */
-.ai-schedule .plan-row{ position: relative !important; }
-
-/* 선택/포커스된 줄을 '행 전체' 오버레이로 표시 */
-.ai-schedule .plan-row.picked::before,
-.ai-schedule .plan-row:focus-within::before{
-  content: "";
-  position: absolute;
-  /* 행 패딩을 감안해 테두리 안쪽으로 살짝 inset */
-  left: 6px; right: 6px; top: 3px; bottom: 3px;
-  border: 2px solid #2563eb;
-  border-radius: 8px;
-  pointer-events: none;
-  box-shadow: 0 0 0 1px rgba(37,99,235,.06) inset;
-}
-
-/* '미리보기' 강조는 배경만 남기고 테두리는 제거(이중선 방지) */
-.ai-schedule .plan-row.has-preview .plan-what{
-  background: #eef6ff !important;
-  border: 0 !important;
-}
-
-/* 스크롤바가 테두리를 덮는 경우를 위해 여유 공간 확보 */
-.ai-schedule .plan-body{
-  padding-right: 8px !important;    /* 필요시 6~10px로 조절 */
-  scrollbar-gutter: stable both-edges !important;
 }

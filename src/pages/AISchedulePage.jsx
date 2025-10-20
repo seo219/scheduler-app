@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth, db } from "../firebaseConfig";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
-import "./AISchedulePage.css";
+import "./AISchedulePage.css"; // 외부 CSS 파일 참조
 
 /* =================== time helpers =================== */
 const DAY = 1440;
@@ -32,7 +32,7 @@ function ymd(ms) {
 function dueTime(v) {
   try {
     if (v == null || v === "") return Number.POSITIVE_INFINITY;
-    if (v?.toDate) return +v.toDate();        // Firestore Timestamp
+    if (v?.toDate) return +v.toDate();
     if (v instanceof Date) return +v;
     if (typeof v === "number" && Number.isFinite(v)) return v;
     if (typeof v === "string") {
@@ -124,7 +124,7 @@ export default function AISchedulePage() {
 
   const [todos, setTodos] = useState([]);
   const [blockedTicks, setBlockedTicks] = useState(new Set()); // 절대분 10분 틱
-  const [previewTicks, setPreviewTicks] = useState(new Map()); // absMin → title
+  const [previewTicks, setPreviewTicks] = useState(new Map()); // absMin → title 
   const [leftovers, setLeftovers] = useState([]);
   const [pick, setPick] = useState(null); // 미리보기 선택 칸(absMin)
 
@@ -225,6 +225,15 @@ export default function AISchedulePage() {
     for (const t of blockedTicks)
       if (t >= timeline.startMin && t < timeline.endMin) busySet.add(t);
 
+    // 특별 처리: '기상' 틱을 busy로 처리해서 AI가 빈 시간으로 보지 않게 함
+    if (Number.isFinite(timeline.startMin)) {
+      const wakeTick = timeline.startMin;
+      if (wakeTick >= timeline.startMin && wakeTick < timeline.endMin) {
+        busySet.add(wakeTick);
+      }
+    }
+
+
     const free = [];
     for (let m = timeline.startMin; m < timeline.endMin; m += 10) {
       if (!busySet.has(m)) free.push(m);
@@ -250,11 +259,11 @@ export default function AISchedulePage() {
       const minTicksRaw = Math.max(0, Math.ceil((t.minMinutes ? +t.minMinutes : 0) / 10));
 
       // 최대(분) 해석:
-      //  - 입력 비어있음/NaN ⇒ 무제한
-      //  - 숫자 ≥0 ⇒ 그 값을 10분 단위 내림 (0 이면 정확히 0)
+      // - 입력 비어있음/NaN ⇒ 무제한
+      // - 숫자 ≥0 ⇒ 그 값을 10분 단위 내림 (0 이면 정확히 0)
       let maxTicks;
       if (t.maxMinutes === "" || t.maxMinutes == null) {
-        maxTicks = Number.MAX_SAFE_INTEGER;           // 무제한
+        maxTicks = Number.MAX_SAFE_INTEGER;
       } else {
         const parsed = Math.max(0, Math.floor((+t.maxMinutes) / 10));
         maxTicks = Number.isFinite(parsed) ? parsed : Number.MAX_SAFE_INTEGER;
@@ -344,7 +353,7 @@ export default function AISchedulePage() {
 
     const { previewMap, leftovers: lo } = distributeWithBounds(
       freeTicks,
-      todos.filter(t => t.enabled !== false)   // ✅ 활성만 스케줄링
+      todos.filter(t => t.enabled !== false)  // ✅ 활성만 스케줄링
     );
     setPreviewTicks(previewMap);
     setLeftovers(lo);
@@ -412,128 +421,18 @@ export default function AISchedulePage() {
 
   return (
     <div className="ai-schedule container">
-      <style dangerouslySetInnerHTML={{
-        __html: `
-/* === AISchedulePage HOTFIX (inline) === */
-.ai-schedule .btn{width:auto!important;min-width:auto!important;display:inline-flex!important;flex:0 0 auto!important;}
-.ai-schedule .boards .plan-card{height:600px!important;}
-@media (max-width:980px){.ai-schedule .boards .plan-card{height:560px!important;}}
-.ai-schedule .pill.is-first{border-left:0!important;padding-left:14px!important;}
-.ai-schedule .section-head{display:flex!important;justify-content:center!important;align-items:center!important;flex-wrap:nowrap!important;gap:12px!important;margin:10px 0 12px!important;}
-.ai-schedule .section-head .section-title{margin:0!important;line-height:1!important;white-space:nowrap!important;}
-.ai-schedule .plan-head .head-inline{display:flex!important;gap:8px!important;}
-.ai-schedule .plan-head .head-inline .btn{margin-left:auto!important;}
-.ai-schedule .plan-row.has-preview .plan-what{background:#eef6ff!important;border:1px solid #e5efff!important;}
-`}} />
-
+      {/* 🗑️ 인라인 스타일 오버라이드 블록을 제거합니다. */}
       <h1>{date} AI 스케줄링</h1>
 
-      {/* === 상단 바: 좌측 취소 / 우측 일정에 반영 === */}
-      <div className="topbar">
-        <div className="left">
-          <button className="btn ghost" onClick={() => navigate(-1)}>취소</button>
-        </div>
-        <div className="right">
-          <button className="btn primary" onClick={handleApply}>일정에 반영</button>
-        </div>
-      </div>
+      {/* 🗑️ 상단 버튼 바 제거됨 */}
 
-      {/* === 좌우 2열 레이아웃 === */}
-      <div className="boards">
-        {/* LEFT: 전체 계획표 */}
-        <div className="board">
-          <div className="plan-card">
-            <div className="plan-head">
-              <span>시간</span>
-              <span className="head-inline">
-                <span className="head-title">활동 / (클릭해 차단)</span>
-                <button className="btn micro on" onClick={() => setBlockedTicks(new Set())}>
-                  차단 초기화
-                </button>
-              </span>
-            </div>
-
-            <div className="plan-body">
-              {ticks.map((m, i) => {
-                const info = busyInfoAt(m);
-                const blocked = isBlocked(m);
-                const wake = i === 0;
-                const baseCls = info ? `is-fixed is-${info.kind}` : (blocked ? "is-blocked" : "");
-                const text = wake ? "기상" : (info ? info.label : (blocked ? "×" : ""));
-                return (
-                  <div
-                    key={m}
-                    className={`plan-row ${baseCls} ${wake ? "is-wake" : ""}`}
-                    role={!info ? "button" : undefined}
-                    onClick={() => toggleBlock(m)}
-                    title={!info ? "클릭하여 이 10분을 차단/해제" : ""}
-                  >
-                    <span className="plan-time">{fmtHM(m)}</span>
-                    <span className="plan-what">{text}</span>
-                  </div>
-                );
-              })}
-              <div className="plan-row marker is-sleep">
-                <span className="plan-time">{fmtHM(timeline.endMin)}</span>
-                <span className="plan-what">취침</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT: 미리보기(셀 교환) */}
-        <div className="board">
-          <div className="plan-card">
-            <div className="plan-head">
-              <span>시간</span>
-              <span>미리보기(셀 교환)</span>
-            </div>
-            <div className="plan-body">
-              {ticks.map((m) => {
-                const base = busyInfoAt(m);
-                const blocked = isBlocked(m);
-                const text = previewTicks.get(m) || "";
-                const picked = pick === m;
-                const cls = base ? `is-fixed is-${base.kind}` : (blocked ? "is-blocked" : (text ? "has-preview" : ""));
-                return (
-                  <div
-                    key={m}
-                    className={`plan-row ${cls} ${picked ? "picked" : ""}`}
-                    onClick={() => {
-                      if (base || blocked) return;
-                      const destText = previewTicks.get(m);
-                      if (pick == null) { if (destText) setPick(m); return; }
-                      if (pick === m) { setPick(null); return; }
-                      const srcText = previewTicks.get(pick);
-                      if (!srcText) { setPick(null); return; }
-                      const next = new Map(previewTicks);
-                      if (destText) { next.set(m, srcText); next.set(pick, destText); }
-                      else { next.delete(pick); next.set(m, srcText); }
-                      setPreviewTicks(next);
-                      setPick(null);
-                    }}
-                    role={(!base && !blocked) ? "button" : undefined}
-                  >
-                    <span className="plan-time">{fmtHM(m)}</span>
-                    <span className="plan-what">
-                      {text || (base ? base.label : (blocked ? "×" : ""))}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* === 대상 할 일 + 미리보기 생성 버튼(제목 옆) === */}
+      {/* 할 일 목록 제목 */}
       <div className="section-head">
         <h3 className="section-title">할 일 ({todos.length})</h3>
-        <button className="btn sm" onClick={handleGenerate} disabled={!todos.length}>
-          미리보기 생성
-        </button>
+        {/* 🚨 참고: 여기서 '차단 초기화' 버튼이 제거됨. 하단 plan-head로 이동 */}
       </div>
 
+      {/* === 대상 할 일 목록 === */}
       <div className="todo-pills">
         {todosSorted.map((t, idx) => (
           <div className={`pill ${t.enabled === false ? 'disabled' : ''} ${idx === 0 ? 'is-first' : ''}`}
@@ -560,7 +459,7 @@ export default function AISchedulePage() {
 
 
             {/* 컨트롤: 우측(2열) 컴팩트 배치 */}
-            <div className="pill-controls">
+            <div className="pill-controls" style={{ height: 28 }}> {/* ⬅️ 높이 강제 적용 */}
               <button
                 type="button"
                 className={`btn xs ${t.enabled === false ? 'off' : 'on'}`}
@@ -580,7 +479,7 @@ export default function AISchedulePage() {
                   onChange={(e) => setTodos(prev =>
                     prev.map(x => x.id === t.id ? { ...x, minMinutes: e.target.value } : x)
                   )}
-                  style={{ width: 72 }}
+                  style={{ width: 72, height: 26, padding: '0 4px', fontSize: 13 }} /* ⬅️ 수정됨 */
                 />
               </label>
               <label>
@@ -591,10 +490,11 @@ export default function AISchedulePage() {
                   onChange={(e) => setTodos(prev =>
                     prev.map(x => x.id === t.id ? { ...x, maxMinutes: e.target.value } : x)
                   )}
-                  style={{ width: 72 }}
+                  style={{ width: 72, height: 26, padding: '0 4px', fontSize: 13 }} /* ⬅️ 수정됨 */
                 />
               </label>
             </div>
+            {/* 배치 실패 알림은 그대로 유지 */}
           </div>
         ))}
       </div>
@@ -614,6 +514,139 @@ export default function AISchedulePage() {
           </div>
         </>
       )}
+
+      {/* === 좌우 2열 레이아웃: 계획표 헤더에 '미리보기 생성' 버튼 추가 === */}
+      <div className="boards" style={{ marginTop: leftovers.length > 0 ? 0 : 20 }}>
+        {/* LEFT: 전체 계획표 (활동 / 차단 설정) */}
+        <div className="board">
+          <div className="plan-card">
+            <div className="plan-head">
+              <span>시간</span>
+              <span className="left-plan-titles">
+                <span className="title-group">
+                  {/* 라벨을 묶어 공간 확보 */}
+                  <span className="head-title">활동</span>
+                  <span className="head-title" title="클릭하여 AI가 이 시간대에 일정을 넣지 않도록 비워둡니다."> 시간 비우기 설정 (클릭)</span>
+                </span>
+                {/* 버튼은 그룹 외부에 배치하여 오른쪽 끝에 고정 */}
+                <button className="btn micro on" onClick={() => setBlockedTicks(new Set())}>
+                  차단 초기화
+                </button>
+              </span>
+            </div>
+
+            <div className="plan-body">
+              {/* 기상 마커 (왼쪽) */}
+              {Number.isFinite(timeline.startMin) && (
+                <div className="plan-row marker is-wake" title="기상">
+                  <span className="plan-time">{fmtHM(timeline.startMin)}</span>
+                  <span className="plan-what">기상</span>
+                </div>
+              )}
+
+              {/* 시간 틱들 */}
+              {/* 시간 틱들 (기상 tick은 marker로 처리했으므로 제외) */}
+              {ticks.filter(m => m !== timeline.startMin).map((m) => {
+                const info = busyInfoAt(m);
+                const blocked = isBlocked(m);
+                const baseCls = info ? `is-fixed is-${info.kind}` : (blocked ? "is-blocked" : "");
+
+                const text = info ? info.label : (blocked ? "비움 (차단됨)" : "");
+
+                return (
+                  <div
+                    key={m}
+                    className={`plan-row ${baseCls}`}
+                    role={!info ? "button" : undefined}
+                    onClick={() => toggleBlock(m)}
+                    title={!info ? "클릭하여 AI가 이 시간대에 일정을 배정하지 않도록 비우기/해제" : ""}
+                  >
+                    <span className="plan-time">{fmtHM(m)}</span>
+                    <span className="plan-what">{text}</span>
+                  </div>
+                );
+              })}
+
+
+              {/* 취침 마커(현재 있던 것) — 유지 */}
+              <div className="plan-row marker is-sleep">
+                <span className="plan-time">{fmtHM(timeline.endMin)}</span>
+                <span className="plan-what">취침</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT: 미리보기(셀 교환) - 버튼 포함 */}
+        <div className="board">
+          <div className="plan-card">
+            <div className="plan-head">
+              <span>시간</span>
+              <span className="head-inline">
+                <span className="head-title">미리보기(셀 교환)</span>
+                <button className="btn micro on" onClick={handleGenerate} disabled={!todos.length}>
+                  미리보기 생성
+                </button>
+              </span>
+            </div>
+            <div className="plan-body">
+              {Number.isFinite(timeline.startMin) && (
+                <div className="plan-row marker is-wake" title="기상">
+                  <span className="plan-time">{fmtHM(timeline.startMin)}</span>
+                  <span className="plan-what">기상</span>
+                </div>
+              )}
+              {ticks.filter(m => m !== timeline.startMin).map((m) => {
+                const base = busyInfoAt(m);
+                const blocked = isBlocked(m);
+                const text = previewTicks.get(m) || "";
+                const picked = pick === m;
+                const cls = base ? `is-fixed is-${base.kind}` : (blocked ? "is-blocked" : (text ? "has-preview" : ""));
+
+                return (
+                  <div
+                    key={m}
+                    className={`plan-row ${cls} ${picked ? "picked" : ""}`}
+                    onClick={() => {
+                      // 클릭 금지: 실제 일정(base) 또는 사용자가 차단(blocked)
+                      if (base || blocked) return;
+                      const destText = previewTicks.get(m);
+                      if (pick == null) { if (destText) setPick(m); return; }
+                      if (pick === m) { setPick(null); return; }
+                      const srcText = previewTicks.get(pick);
+                      if (!srcText) { setPick(null); return; }
+                      const next = new Map(previewTicks);
+                      if (destText) { next.set(m, srcText); next.set(pick, destText); }
+                      else { next.delete(pick); next.set(m, srcText); }
+                      setPreviewTicks(next);
+                      setPick(null);
+                    }}
+                    role={(!base && !blocked) ? "button" : undefined}
+                  >
+                    <span className="plan-time">{fmtHM(m)}</span>
+                    <span className="plan-what">
+                      {text || (base ? base.label : (blocked ? "×" : ""))}
+                    </span>
+                  </div>
+                );
+              })}
+
+              <div className="plan-row marker is-sleep">
+                <span className="plan-time">{fmtHM(timeline.endMin)}</span>
+                <span className="plan-what">취침</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* === 하단 버튼 바 추가 === */}
+      <div className="bottom-bar">
+        <button className="btn cancel" onClick={() => navigate(-1)}>취소</button>
+        <button className="btn primary" onClick={handleApply}>일정에 반영</button>
+      </div>
+
     </div>
   );
 }

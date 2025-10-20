@@ -96,24 +96,28 @@ export default function SettingsPage() {
 
       {/* 계정 관련 */}
       <section className="section">
-        <h2>계정</h2>
-        <p className="account-info">
-          <span className="account-label">로그인 계정:</span> {email}
-        </p>
-        <button onClick={handleLogout} className="btn logout">
-          로그아웃{auth.currentUser?.isAnonymous ? ' & 삭제' : ''}
+  <h2>계정</h2>
+  <p className="account-info">
+    <span className="account-label">로그인 계정:</span> {email}
+  </p>
+
+  <div className="button-group">
+    <button onClick={handleLogout} className="btn logout">
+      로그아웃{auth.currentUser?.isAnonymous ? ' & 삭제' : ''}
+    </button>
+
+    {!auth.currentUser?.isAnonymous && (
+      <>
+        <button onClick={handleResetPassword} className="btn reset">
+          비밀번호 재설정
         </button>
-        {!auth.currentUser?.isAnonymous && (
-          <>
-            <button onClick={handleResetPassword} className="btn reset">
-              비밀번호 재설정
-            </button>
-            <button onClick={handleDeleteAccount} className="btn delete-account">
-              계정 삭제
-            </button>
-          </>
-        )}
-      </section>
+        <button onClick={handleDeleteAccount} className="btn delete-account">
+          계정 삭제
+        </button>
+      </>
+    )}
+  </div>
+</section>
 
       {/* 글꼴 설정 */}
       <section className="section">
