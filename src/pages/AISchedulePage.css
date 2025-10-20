@@ -36,9 +36,9 @@
   border:1px solid #d1d5db;
   background:#6b7280; color:#fff;
   cursor:pointer; user-select:none;
-  width:auto !important;
-  min-width:auto !important;
-  flex:0 0 auto !important;
+  width:auto;
+  min-width:auto;
+  flex:0 0 auto;
   font-weight:400;
 }
 .btn:hover{ filter:brightness(.98); }
@@ -97,7 +97,7 @@
 }
 .left-plan-titles .title-group .head-title:first-child{ font-weight:800 !important; }
 /* 🚨 "시간 비우기 설정 (클릭)" 텍스트 굵기를 400으로 변경 */
-.left-plan-titles .title-group .head-title{ font-weight:800 !important; white-space:nowrap; } 
+.left-plan-titles .title-group .head-title{ font-weight:400 !important; white-space:nowrap; } 
 
 .left-plan-titles .btn.micro{ flex-shrink:0; margin-left:10px; }
 .head-inline{ 
