@@ -1,4 +1,4 @@
-/* src/pages/AISchedulePage.css — v5.2 (buttons align with boards) */
+/* src/pages/AISchedulePage.css */
 
 /* ===== Root scale ===== */
 :root{
@@ -295,4 +295,99 @@
     width:100% !important;
     height:44px !important;
   }
+}
+
+/* --- Mobile: pill two-row layout --- */
+@media (max-width: 600px) {
+  /* Make each pill vertical stack so we can separate head and controls */
+  .pill {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+    padding: 10px 12px !important;
+    min-height: 64px !important;
+  }
+
+  /* First row: index + title + meta (D-day / due) */
+  .pill-head {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* left block (idx + title + chips) should take remaining space */
+  .pill-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    min-width: 0 !important; /* allow text truncation */
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+  }
+
+  .pill-idx { flex: 0 0 auto; margin-right: 6px !important; }
+  .pill-title { flex: 1 1 auto !important; min-width: 0 !important; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* meta (D-day, due date) aligned to right of first row */
+  .pill-meta-inline {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    margin-left: 8px !important;
+  }
+
+  /* Second row: controls row full width */
+  .pill-controls {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important; /* controls stick to right */
+    gap: 8px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Make toggle button touch-friendly but small */
+  .pill-controls .btn {
+    flex: 0 0 auto !important;
+    height: 36px !important;
+    padding: 0 10px !important;
+    min-width: 72px !important;
+    font-size: 13px !important;
+  }
+
+  /* number inputs keep fixed moderate width */
+  .pill-controls input[type="number"] {
+    flex: 0 0 84px !important; /* width for min/max boxes */
+    min-width: 72px !important;
+    height: 36px !important;
+    padding: 6px 8px !important;
+    box-sizing: border-box !important;
+    font-size: 13px !important;
+  }
+
+  /* if screen is really narrow, allow controls to wrap to multiple lines */
+  @media (max-width: 360px) {
+    .pill-controls {
+      flex-wrap: wrap !important;
+      justify-content: flex-start !important;
+      gap: 6px !important;
+    }
+    .pill-controls .btn { min-width: 64px !important; }
+    .pill-controls input[type="number"] { flex: 1 1 44% !important; min-width: 120px !important; }
+  }
+
+  /* chips should shrink and wrap if needed */
+  .chip { font-size: 11px !important; height: 20px !important; padding: 0 6px !important; }
+
+  /* keep pill-head title from overflowing entire card */
+  .pill-head .pill-left { overflow: hidden; }
 }
