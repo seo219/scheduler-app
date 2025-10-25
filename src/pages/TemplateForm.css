@@ -6,7 +6,7 @@
   margin: 0 auto;
   padding: 16px;
   border-radius: 12px;
-  background: #fafafa !important;
+  background: #fafafa;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
 }
@@ -45,7 +45,7 @@
   margin: 0 auto;
   padding: 16px;
   border-radius: 12px;
-  background: #fafafa !important;
+  background: #fafafa;
   box-shadow: 0 2px 8px rgba(0,0,0,.06);
   box-sizing: border-box;
   padding-bottom: calc(16px + env(safe-area-inset-bottom)); /* iOS 하단 */
@@ -120,7 +120,7 @@ html, body { overflow-x: hidden; }
   margin: 0 auto;
   padding: 16px;
   border-radius: 12px;
-  background: #fafafa !important;
+  background: #fafafa;
   box-shadow: 0 2px 8px rgba(0,0,0,.06);
   box-sizing: border-box;
   padding-bottom: calc(16px + env(safe-area-inset-bottom));

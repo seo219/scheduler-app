@@ -3,14 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { auth, db } from '../firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import './FullSchedulePage.css';
-
-const TYPE_COLORS = {
-  sleep:  '#eee',
-  meal:   '#eaf6ff',
-  fixed:  '#f1f1f1',
-  todo:   '#f8f8f8',
-  holiday:'#fffbe6',
-};
+import { TYPE_COLORS } from '../constants/typeColors';
 
 const toDateKey = (d) => {
   const y = d.getFullYear();

@@ -48,18 +48,18 @@
 .btn.ghost  { background:#6b7280; border-color:#6b7280; color:#fff; }
 /* 🚨 취소 버튼 빨간색 스타일 */
 .btn.cancel { 
-    background: #dc2626 !important; 
-    border-color: #dc2626 !important; 
-    color: #fff !important; 
+    background: #dc2626; 
+    border-color: #dc2626; 
+    color: #fff; 
 }
 /* ------------------------------------------- */
 .btn.sm     { height:30px; padding:0 10px; font-size:12px; border-radius:8px; }
 .btn.xs     { height:28px; padding:0 8px; font-size:12px; border-radius:8px; }
 .btn.micro{
-  height:24px !important; line-height:24px !important;
-  padding:0 10px !important; font-size:12px !important;
-  border-radius:9999px !important;
-  width:auto !important; min-width:auto !important;
+  height:24px; line-height:24px;
+  padding:0 10px; font-size:12px;
+  border-radius:9999px;
+  width:auto; min-width:auto;
 }
 .btn.on  { background:#4b5563; border-color:#4b5563; color:#fff; }
 .btn.off { background:#9ca3af; border-color:#9ca3af; color:#fff; }
@@ -74,7 +74,7 @@
 /* 🚨 시간표 카드 외부 프레임 굵게 (2px) 변경 */
 .plan-card{
   background:#fff; 
-  border:2px solid #000 !important; /* 굵은 검은색 실선 (2px) */
+  border:2px solid #000; /* 굵은 검은색 실선 (2px) */
   border-radius:12px; overflow:hidden;
   box-shadow:0 1px 2px rgba(0,0,0,.04);
   display:flex; flex-direction:column; min-width:0; height:560px;
@@ -86,7 +86,7 @@
   display:grid; grid-template-columns:var(--ai-time-col) 1fr;
   gap:10px;
   background:#f8f9fc; 
-  border-bottom:2px solid #000 !important; /* 헤더 하단 구분선 굵게 (2px) 변경 */
+  border-bottom:2px solid #000; /* 헤더 하단 구분선 굵게 (2px) 변경 */
   padding:10px 12px; font-weight:700; color:#222;
 }
 .left-plan-titles{
@@ -95,24 +95,24 @@
 .left-plan-titles .title-group{
   display:flex; gap:10px; align-items:center; flex-shrink:1; min-width:0;
 }
-.left-plan-titles .title-group .head-title:first-child{ font-weight:800 !important; }
+.left-plan-titles .title-group .head-title:first-child{ font-weight:800; }
 /* 🚨 "시간 비우기 설정 (클릭)" 텍스트 굵기를 400으로 변경 */
-.left-plan-titles .title-group .head-title{ font-weight:400 !important; white-space:nowrap; } 
+.left-plan-titles .title-group .head-title{ font-weight:400; white-space:nowrap; } 
 
 .left-plan-titles .btn.micro{ flex-shrink:0; margin-left:10px; }
 .head-inline{ 
     /* 🚨 수정: 버튼 오른쪽 정렬을 위해 justify-content: space-between 적용 */
-    display:flex !important; 
-    align-items:center !important; 
+    display:flex; 
+    align-items:center; 
     gap:8px; 
     white-space:nowrap; 
-    justify-content: space-between !important;
-    flex-grow: 1 !important; 
+    justify-content: space-between;
+    flex-grow: 1; 
 }
 .head-title{ font-weight:700; }
 .plan-head .btn.micro{ 
     margin-left:6px;
-    flex-shrink: 0 !important; 
+    flex-shrink: 0; 
     order: 999; 
 }
 
@@ -124,10 +124,10 @@
 .plan-row{
   display:grid; grid-template-columns:var(--ai-time-col) 1fr; align-items:center;
   min-height:var(--ai-row-h); padding:8px 12px;
-  border-bottom:1px solid #000 !important; 
+  border-bottom:1px solid #000; 
   font-size:14px;
 }
-.plan-row:last-child{ border-bottom:0 !important; } 
+.plan-row:last-child{ border-bottom:0; } 
 
 .plan-time{ color:#6b7280; font-variant-numeric:tabular-nums; font-feature-settings:"tnum"; }
 .plan-what{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; border-radius:8px; padding:4px 6px; }
@@ -138,52 +138,52 @@
 .plan-row.is-meal  .plan-what{ background:#fff7ed; }
 .plan-row.is-sleep .plan-what{ background:#f1f5f9; }
 .plan-row.is-blocked .plan-what{ background:#fff1f1; border:1px solid #ffd2d2; color:#b91c1c; text-align:center; }
-.plan-row.has-preview .plan-what{ background:#eef6ff; border:0 !important; }
+.plan-row.has-preview .plan-what{ background:#eef6ff; border:0; }
 
 .plan-row.marker{ background:#fafafa; font-weight:700; }
 
 /* 대상 할 일 */
 .section-head{
-  display:flex !important; justify-content:center !important; align-items:center !important;
-  flex-wrap:nowrap !important; gap:12px !important; margin:10px 0 12px !important;
+  display:flex; justify-content:center; align-items:center;
+  flex-wrap:nowrap; gap:12px; margin:10px 0 12px;
 }
 .section-head .section-title{
-  margin:0 !important; line-height:1 !important; white-space:nowrap !important;
+  margin:0; line-height:1; white-space:nowrap;
 }
 .section-head .btn{
-  width:auto !important; min-width:auto !important; flex:0 0 auto !important;
-  display:inline-flex !important; height:30px !important; padding:0 12px !important;
-  font-size:13px !important; border-radius:10px !important;
+  width:auto; min-width:auto; flex:0 0 auto;
+  display:inline-flex; height:30px; padding:0 12px;
+  font-size:13px; border-radius:10px;
 }
 
 /* Todo pills */
 .todo-pills{
     display:flex; flex-direction:column;
-    gap:3px !important; 
+    gap:3px; 
 }
 .todo-pills.warn .pill{ background:#fff7f7; border-color:#ffdede; }
 
 /* 🚨 할 일 목록 프레임 굵게 (2px) 변경 및 Flexbox 설정 유지 */
 .pill{
   background:#fff; 
-  border:2px solid #000 !important; /* 굵은 검은색 실선 (2px) 적용 */
+  border:2px solid #000; /* 굵은 검은색 실선 (2px) 적용 */
   border-radius:14px;
   /* 패딩 최소화 */
-  padding:2px 14px !important; 
+  padding:2px 14px; 
   box-shadow:0 1px 2px rgba(0,0,0,.03);
   
   /* Flexbox 컨테이너 */
-  margin-left: 2px !important; 
-  display:flex !important; 
-  align-items:center !important; /* 세로 중앙 정렬 */
-  justify-content: space-between !important; /* 헤더와 컨트롤 영역 좌우 분리 */
+  margin-left: 2px; 
+  display:flex; 
+  align-items:center; /* 세로 중앙 정렬 */
+  justify-content: space-between; /* 헤더와 컨트롤 영역 좌우 분리 */
   gap: 12px; /* Flex 항목 간 간격 */
-  min-height: 40px !important; /* 항목 최소 높이 지정 */
+  min-height: 40px; /* 항목 최소 높이 지정 */
 }
 /* 🚨 왼쪽 테두리 공간 확보 및 is-first 처리 */
 .pill.is-first{ 
-  border-left:2px solid #000 !important; 
-  padding-left:14px !important; 
+  border-left:2px solid #000; 
+  padding-left:14px; 
 } 
 .pill.disabled{ opacity:.55; filter:grayscale(.12); }
 
@@ -191,19 +191,19 @@
   /* Flexbox 하에서 1열 역할 (왼쪽) */
   flex-grow: 1; /* 남은 공간 모두 차지 */
   display:flex; 
-  align-items:center !important; /* 내부 요소 중앙 정렬 */
+  align-items:center; /* 내부 요소 중앙 정렬 */
   gap:12px; 
-  margin:4px 0 !important; 
-  padding: 0 !important;
+  margin:4px 0; 
+  padding: 0;
 }
 .pill-left{ 
     display:flex; 
-    align-items:center !important; /* 내부 요소 중앙 정렬 */
+    align-items:center; /* 내부 요소 중앙 정렬 */
     gap:8px; 
     min-width:0; 
 }
 .pill-title{ font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.pill-idx{ display:inline-block; min-width:0; background:transparent !important; border:0 !important; box-shadow:none !important; color:#6b7280; font-weight:700; font-size:12px; margin-right:6px; padding:0 !important; }
+.pill-idx{ display:inline-block; min-width:0; background:transparent; border:0; box-shadow:none; color:#6b7280; font-weight:700; font-size:12px; margin-right:6px; padding:0; }
 .pill-meta-inline{ display:flex; align-items:center; gap:8px; margin-left:12px; }
 .chip{ display:inline-flex; align-items:center; height:22px; line-height:22px; padding:0 8px; border-radius:9999px; font-size:12px; }
 .chip.fill   { background:#4b5563; color:#fff; font-weight:600; }
@@ -212,48 +212,48 @@
 .pill-controls{
   /* Flexbox 하에서 2열 역할 (오른쪽) */
   flex-shrink: 0;
-  display:flex !important;
-  align-items:center !important; /* 내부 요소 중앙 정렬 */
-  gap:6px !important;
-  margin:0 !important;
-  padding: 0 !important;
-  min-height: 28px !important; 
+  display:flex;
+  align-items:center; /* 내부 요소 중앙 정렬 */
+  gap:6px;
+  margin:0;
+  padding: 0;
+  min-height: 28px; 
 }
 
 /* label 및 input 스타일 (여백 압축 및 중앙 정렬) */
 .pill-controls label {
-    display: flex !important; 
-    align-items: center !important; 
-    gap: 4px !important; 
-    font-size: 13px !important; 
-    line-height: 1 !important; 
-    white-space: nowrap !important;
-    margin: 0 !important; 
-    padding: 0 !important; 
+    display: flex; 
+    align-items: center; 
+    gap: 4px; 
+    font-size: 13px; 
+    line-height: 1; 
+    white-space: nowrap;
+    margin: 0; 
+    padding: 0; 
 }
 .pill-controls label, 
 .pill-controls input[type="number"], 
 .pill-controls .btn {
-  vertical-align: middle !important; 
+  vertical-align: middle; 
 }
 
 .pill-controls input[type="number"] {
-    height: 26px !important; 
-    padding: 0 4px !important;
-    font-size: 13px !important;
-    box-sizing: border-box !important; 
-    border-radius: 6px !important; 
-    min-width: 60px !important;
-    margin: 0 !important; 
+    height: 26px; 
+    padding: 0 4px;
+    font-size: 13px;
+    box-sizing: border-box; 
+    border-radius: 6px; 
+    min-width: 60px;
+    margin: 0; 
 }
 
 .pill-controls .btn{ 
-    height:26px !important; 
-    padding:0 10px !important; 
-    font-size:12px !important; 
-    border-radius:8px !important; 
-    width:auto !important; 
-    min-width:auto !important; 
+    height:26px; 
+    padding:0 10px; 
+    font-size:12px; 
+    border-radius:8px; 
+    width:auto; 
+    min-width:auto; 
 }
 
 /* Scrollbar */
@@ -262,8 +262,8 @@
 .plan-body::-webkit-scrollbar-track{ background:transparent; }
 
 /* Boards 동일 높이 */
-.ai-schedule .boards .plan-card{ height:600px !important; }
-@media (max-width:980px){ .ai-schedule .boards .plan-card{ height:560px !important; } }
+.ai-schedule .boards .plan-card{ height:600px; }
+@media (max-width:980px){ .ai-schedule .boards .plan-card{ height:560px; } }
 
 /* ===== v5.2 하단 버튼 좌우 계획표 폭과 정렬 ===== */
 .ai-schedule .bottom-bar{
@@ -277,9 +277,9 @@
   box-sizing:border-box;
 }
 .ai-schedule .bottom-bar .btn{
-  width:100% !important;   /* 각 버튼이 칸 전체 채우기 */
-  height:50px !important;
-  font-size:16px !important;
+  width:100%;   /* 각 버튼이 칸 전체 채우기 */
+  height:50px;
+  font-size:16px;
   border-radius:10px;
   min-width:130px;
   flex:unset;              /* flex 제거 */
@@ -292,8 +292,8 @@
     padding:16px;
   }
   .ai-schedule .bottom-bar .btn{
-    width:100% !important;
-    height:44px !important;
+    width:100%;
+    height:44px;
   }
 }
 
@@ -301,92 +301,92 @@
 @media (max-width: 600px) {
   /* Make each pill vertical stack so we can separate head and controls */
   .pill {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 6px !important;
-    padding: 10px 12px !important;
-    min-height: 64px !important;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 10px 12px;
+    min-height: 64px;
   }
 
   /* First row: index + title + meta (D-day / due) */
   .pill-head {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 8px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    width: 100%;
   }
 
   /* left block (idx + title + chips) should take remaining space */
   .pill-left {
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    min-width: 0 !important; /* allow text truncation */
-    flex: 1 1 auto !important;
-    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0; /* allow text truncation */
+    flex: 1 1 auto;
+    overflow: hidden;
   }
 
-  .pill-idx { flex: 0 0 auto; margin-right: 6px !important; }
-  .pill-title { flex: 1 1 auto !important; min-width: 0 !important; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pill-idx { flex: 0 0 auto; margin-right: 6px; }
+  .pill-title { flex: 1 1 auto; min-width: 0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
   /* meta (D-day, due date) aligned to right of first row */
   .pill-meta-inline {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     flex: 0 0 auto;
     white-space: nowrap;
-    margin-left: 8px !important;
+    margin-left: 8px;
   }
 
   /* Second row: controls row full width */
   .pill-controls {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-end !important; /* controls stick to right */
-    gap: 8px !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end; /* controls stick to right */
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   /* Make toggle button touch-friendly but small */
   .pill-controls .btn {
-    flex: 0 0 auto !important;
-    height: 36px !important;
-    padding: 0 10px !important;
-    min-width: 72px !important;
-    font-size: 13px !important;
+    flex: 0 0 auto;
+    height: 36px;
+    padding: 0 10px;
+    min-width: 72px;
+    font-size: 13px;
   }
 
   /* number inputs keep fixed moderate width */
   .pill-controls input[type="number"] {
-    flex: 0 0 84px !important; /* width for min/max boxes */
-    min-width: 72px !important;
-    height: 36px !important;
-    padding: 6px 8px !important;
-    box-sizing: border-box !important;
-    font-size: 13px !important;
+    flex: 0 0 84px; /* width for min/max boxes */
+    min-width: 72px;
+    height: 36px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    font-size: 13px;
   }
 
   /* if screen is really narrow, allow controls to wrap to multiple lines */
   @media (max-width: 360px) {
     .pill-controls {
-      flex-wrap: wrap !important;
-      justify-content: flex-start !important;
-      gap: 6px !important;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 6px;
     }
-    .pill-controls .btn { min-width: 64px !important; }
-    .pill-controls input[type="number"] { flex: 1 1 44% !important; min-width: 120px !important; }
+    .pill-controls .btn { min-width: 64px; }
+    .pill-controls input[type="number"] { flex: 1 1 44%; min-width: 120px; }
   }
 
   /* chips should shrink and wrap if needed */
-  .chip { font-size: 11px !important; height: 20px !important; padding: 0 6px !important; }
+  .chip { font-size: 11px; height: 20px; padding: 0 6px; }
 
   /* keep pill-head title from overflowing entire card */
   .pill-head .pill-left { overflow: hidden; }

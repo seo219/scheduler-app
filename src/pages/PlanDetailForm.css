@@ -5,7 +5,7 @@
   padding: 16px;
   box-sizing: border-box;
   border-radius: 12px;
-  background: #fafafa !important;
+  background: #fafafa;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   font-family: 'Segoe UI', sans-serif;
 }
@@ -110,15 +110,15 @@
   .plan-detail-form .time-row .color-input-fix {
     /* 클래스 선택자로 우선순위를 높여 완벽한 정렬을 시도합니다. */
     grid-column: auto; 
-    width: 100% !important; 
+    width: 100%; 
     
     /* 패딩, 높이, 테두리 등을 시간 옵션과 완벽히 일치시킵니다. */
-    padding: 6px 10px !important; 
-    height: 44px !important; 
-    min-height: 44px !important;
-    border-radius: 8px !important;
-    box-sizing: border-box !important; 
-    border: 1px solid #000 !important; 
+    padding: 6px 10px; 
+    height: 44px; 
+    min-height: 44px;
+    border-radius: 8px;
+    box-sizing: border-box; 
+    border: 1px solid #000; 
     
     /* 외형 초기화 */
     -webkit-appearance: none;

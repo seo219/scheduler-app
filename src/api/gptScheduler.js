@@ -1,16 +1,9 @@
 // src/api/gptScheduler.js
 import OpenAI from 'openai';
-
+import { TYPE_COLORS } from '../constants/typeColors';
 // ===== 기본 설정 =====
 const MODEL = 'gpt-4o-mini';
 const ENABLE_BROWSER = true;
-const TYPE_COLORS = {
-  sleep:   '#FFFFFF',
-  meal:    '#F5F5F5',
-  fixed:   '#E3F9E5',
-  todo:    '#FFF5E5',
-  holiday: '#FFEFD5',
-};
 
 // ===== 유틸 =====
 const toMin = (hhmm = '00:00') => {
@@ -19,7 +12,7 @@ const toMin = (hhmm = '00:00') => {
 };
 const toHHMM = (min) => {
   const h = Math.floor(min / 60), m = min % 60;
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 };
 const padHHMM = (s) => toHHMM(toMin(s));
 const clamp = (t, lo, hi) => Math.max(lo, Math.min(hi, t));
@@ -33,7 +26,7 @@ const normalizeTask = (t) => {
   // _engine/_reason은 그대로 두되, 저장 단계에서 필터링
   return {
     start: padHHMM(t.start),
-    end:   padHHMM(t.end),
+    end: padHHMM(t.end),
     type,
     task,
     activity,
@@ -54,7 +47,7 @@ function normalizeFixedData(fixedData = {}) {
     type: 'fixed', task: s.task || '고정 일정', activity: s.task || '고정 일정', color: s.color || TYPE_COLORS.fixed,
   }));
   const wake = padHHMM(sleepTime.wakeUp || '06:00');
-  const bed  = padHHMM(sleepTime.bedTime || '22:00');
+  const bed = padHHMM(sleepTime.bedTime || '22:00');
   return { sleepTime: { wakeUp: wake, bedTime: bed }, meals, schedules };
 }
 
@@ -69,7 +62,7 @@ function windowsFromFixed(dayStart, dayEnd, fixedBlocks) {
   const fixed = [...fixedBlocks]
     .map(b => ({ ...b, s: clamp(toMin(b.start), dayStart, dayEnd), e: clamp(toMin(b.end), dayStart, dayEnd) }))
     .filter(b => b.e > b.s)
-    .sort((a,b)=>a.s-b.s);
+    .sort((a, b) => a.s - b.s);
   const free = [];
   let cur = dayStart;
   for (const b of fixed) {
@@ -80,7 +73,7 @@ function windowsFromFixed(dayStart, dayEnd, fixedBlocks) {
   return free; // [{s,e}]
 }
 
-function isRestLabel(label='') {
+function isRestLabel(label = '') {
   const s = String(label).toLowerCase();
   return s.includes('휴식') || s.includes('휴게') || s.includes('rest') || s.includes('break');
 }
@@ -105,7 +98,7 @@ function fitIntoWindows(rawTasks, { windows, dayStart, dayEnd, minBlock = 60, re
     }
   }
 
-  clipped.sort((a,b)=>toMin(a.start)-toMin(b.start));
+  clipped.sort((a, b) => toMin(a.start) - toMin(b.start));
   const packed = [];
   for (const t of clipped) if (!packed.some(p => overlaps(p, t))) packed.push(t);
 
@@ -120,7 +113,7 @@ function fitIntoWindows(rawTasks, { windows, dayStart, dayEnd, minBlock = 60, re
 
   const totalSpan = dayEnd - dayStart;
   let restBlocks = merged.filter(x => isRestLabel(x.task || x.activity));
-  let restTime = restBlocks.reduce((a,b)=>a + (toMin(b.end)-toMin(b.start)), 0);
+  let restTime = restBlocks.reduce((a, b) => a + (toMin(b.end) - toMin(b.start)), 0);
   const tooManyBlocks = restBlocks.length > restMaxBlocks;
   const tooMuchTime = restTime > totalSpan * restMaxRatio;
   if (tooManyBlocks || tooMuchTime) {
@@ -128,7 +121,7 @@ function fitIntoWindows(rawTasks, { windows, dayStart, dayEnd, minBlock = 60, re
     let keptRest = 0, keptRestTime = 0;
     for (const t of merged) {
       if (isRestLabel(t.task || t.activity)) {
-        const span = toMin(t.end)-toMin(t.start);
+        const span = toMin(t.end) - toMin(t.start);
         if (keptRest < restMaxBlocks && keptRestTime + span <= totalSpan * restMaxRatio) {
           trimmed.push(t);
           keptRest += 1;
@@ -151,7 +144,7 @@ function buildTodoPrompt({ sleepTime, fixedBlocks, todos }) {
   fixedBlocks.forEach(b => lines.push(`  - ${b.start}~${b.end} ${b.task || b.activity || b.type}`));
   lines.push('- 투두(마감 빠른 순 우선):');
   if (!todos?.length) lines.push('  - (없음)');
-  (todos||[]).forEach((t,i)=>lines.push(`  - ${i+1}. ${t.text || t.task || '할일'} | due: ${t.dueDate || '없음'}`));
+  (todos || []).forEach((t, i) => lines.push(`  - ${i + 1}. ${t.text || t.task || '할일'} | due: ${t.dueDate || '없음'}`));
   lines.push('');
   lines.push('출력 JSON 예: {"tasks":[{"start":"HH:MM","end":"HH:MM","type":"todo","task":"문자열"}]}');
   lines.push('- 고정과 겹치지 않게. 10분 단위. 기본 60분 세션(필요시 30~90분).');
@@ -163,7 +156,7 @@ function buildTodoPrompt({ sleepTime, fixedBlocks, todos }) {
 export async function generateSchedule({ fixedData = {}, todoData = [] }) {
   const { sleepTime, meals, schedules } = normalizeFixedData(fixedData);
   const dayStart = toMin(sleepTime.wakeUp);
-  const dayEnd   = toMin(sleepTime.bedTime);
+  const dayEnd = toMin(sleepTime.bedTime);
   const fixedBlocks = [...meals, ...schedules].map(normalizeTask);
   const windows = windowsFromFixed(dayStart, dayEnd, fixedBlocks);
 
@@ -187,7 +180,7 @@ export async function generateSchedule({ fixedData = {}, todoData = [] }) {
         messages: [{ role: 'user', content: prompt }],
       });
       const json = extractJson(res?.choices?.[0]?.message?.content || '');
-      aiTasks = fitIntoWindows(Array.isArray(json?.tasks)?json.tasks:[], {
+      aiTasks = fitIntoWindows(Array.isArray(json?.tasks) ? json.tasks : [], {
         windows, dayStart, dayEnd, minBlock: 60, restMaxBlocks: 1, restMaxRatio: 0.1, forceType: 'todo',
       });
     } catch (e) {
@@ -197,13 +190,13 @@ export async function generateSchedule({ fixedData = {}, todoData = [] }) {
   }
 
   if (!aiTasks || aiTasks.length === 0) {
-    const sorted = [...(todoData||[])].sort((a,b)=>(a.dueDate || '9999-12-31').localeCompare(b.dueDate || '9999-12-31'));
+    const sorted = [...(todoData || [])].sort((a, b) => (a.dueDate || '9999-12-31').localeCompare(b.dueDate || '9999-12-31'));
     const raw = [];
     let i = 0;
     for (const w of windows) {
       let c = w.s;
       while (c + 60 <= w.e && i < sorted.length) {
-        raw.push({ start: toHHMM(c), end: toHHMM(c+60), type: 'todo', task: sorted[i++].text || '할 일' });
+        raw.push({ start: toHHMM(c), end: toHHMM(c + 60), type: 'todo', task: sorted[i++].text || '할 일' });
         c += 60;
       }
       if (i >= sorted.length) break;
@@ -262,7 +255,7 @@ function buildHolidayPrompt({ interest, energy, sleepTime, windows, duration, ta
 
 function fallbackHoliday({ interest, energy, windows, duration, dayStart, dayEnd }) {
   const TARGET = { '피곤함': 3, '보통': 5, '에너지 충만': 6 }[energy] || 5;
-  const BREAK  = { '피곤함': 30, '보통': 20, '에너지 충만': 15 }[energy] || 20;
+  const BREAK = { '피곤함': 30, '보통': 20, '에너지 충만': 15 }[energy] || 20;
   const names = CATALOG[interest] || [interest + ' 활동'];
   let nameIdx = 0;
 
@@ -289,8 +282,8 @@ function fallbackHoliday({ interest, energy, windows, duration, dayStart, dayEnd
 
 export async function generateHolidaySchedule({ interest, energy, fixedData = {} }) {
   const ENERGY = {
-    '피곤함':       { wakeUp: '10:00', bedTime: '21:30', duration: 45, target: 3 },
-    '보통':         { wakeUp: '09:00', bedTime: '22:00', duration: 60, target: 5 },
+    '피곤함': { wakeUp: '10:00', bedTime: '21:30', duration: 45, target: 3 },
+    '보통': { wakeUp: '09:00', bedTime: '22:00', duration: 60, target: 5 },
     '에너지 충만': { wakeUp: '08:00', bedTime: '23:00', duration: 90, target: 6 },
   };
 
@@ -300,7 +293,7 @@ export async function generateHolidaySchedule({ interest, energy, fixedData = {}
   });
   const { sleepTime, meals, schedules } = base;
   const dayStart = toMin(sleepTime.wakeUp);
-  const dayEnd   = toMin(sleepTime.bedTime);
+  const dayEnd = toMin(sleepTime.bedTime);
   const duration = ENERGY[energy]?.duration || 60;
   const targetSessions = ENERGY[energy]?.target || 5;
 
@@ -327,7 +320,7 @@ export async function generateHolidaySchedule({ interest, energy, fixedData = {}
         messages: [{ role: 'user', content: prompt }],
       });
       const json = extractJson(res?.choices?.[0]?.message?.content || '');
-      aiTasks = fitIntoWindows(Array.isArray(json?.tasks)?json.tasks:[], {
+      aiTasks = fitIntoWindows(Array.isArray(json?.tasks) ? json.tasks : [], {
         windows, dayStart, dayEnd,
         minBlock: duration,
         restMaxBlocks: 2, restMaxRatio: 0.2,
@@ -347,6 +340,159 @@ export async function generateHolidaySchedule({ interest, energy, fixedData = {}
 
   return [...fixedBlocks, ...aiTasks].map(normalizeTask);
 }
+
+// === [ADD] 자유 입력 휴일 프롬프트 빌더 ===
+export function buildHolidayFreeformPrompt({
+  dateKey,
+  freeText,
+  autonomy = 70,
+  tz = 'Asia/Seoul',
+  fixedData = {},
+  language = 'ko'
+}) {
+  // 기존 normalizeFixedData / windowsFromFixed 재사용 (파일 상단에 이미 정의됨)
+  const base = normalizeFixedData(fixedData); // 수면/식사/고정 스케줄 정규화
+  const { sleepTime, meals, schedules } = base;
+  const dayStart = toMin(sleepTime.wakeUp);
+  const dayEnd = toMin(sleepTime.bedTime);
+  const fixedBlocks = [...meals, ...schedules].map(normalizeTask);
+  const windows = windowsFromFixed(dayStart, dayEnd, fixedBlocks);
+
+  const system = [
+    `You are a proactive holiday/day-trip planner AI.`,
+    `The user provides free-form notes. Infer goals, vibe, constraints without asking followups.`,
+    `Make a realistic plan for ${dateKey || 'the given day'} in ${tz}.`,
+    `Autonomy scale (0-100): ${autonomy}. Higher = more initiative (novel ideas, soft-time adjustments) but do not violate obvious hard human limits (e.g., sleep).`,
+    `Return ONLY a valid JSON object (no code fences).`
+  ].join('\n');
+
+  const userObj = {
+    dateKey, tz, freeText, language,
+    anchors: {
+      sleepTime,
+      meals, // soft anchor: autonomy가 높으면 ±30분 조정 허용
+    },
+    windows: windows.map(w => ({ start: toHHMM(w.s), end: toHHMM(w.e) })),
+    rules: {
+      hard: {
+        noOverlapWithSleep: true,
+        obeyWindows: true
+      },
+      soft: {
+        adjustMealsMinutes: 30,
+        minBlockMin: 40,
+        maxBlockMin: 150,
+        includeMicroBreaks: true
+      }
+    }
+  };
+
+  const schema = {
+    type: 'object',
+    required: ['tasks', 'assumptions', 'notes'],
+    properties: {
+      tasks: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['start', 'end', 'task'],
+          properties: {
+            start: { type: 'string', description: 'HH:mm' },
+            end: { type: 'string', description: 'HH:mm' },
+            task: { type: 'string' },
+            detail: { type: 'string' },
+            cost: { type: 'string' },
+            indoor: { type: 'boolean' },
+          }
+        }
+      },
+      assumptions: { type: 'array', items: { type: 'string' } },
+      notes: { type: 'string' }
+    }
+  };
+
+  const user = `USER_INPUT:\n${JSON.stringify(userObj, null, 2)}\n\nRESPONSE_FORMAT (JSON Schema):\n${JSON.stringify(schema, null, 2)}\n\nReturn ONLY one JSON object.`;
+  return { system, user, context: { windows, dayStart, dayEnd, fixedBlocks } };
+}
+
+// === [ADD] 자유 입력 휴일 스케줄 생성기 ===
+export async function generateHolidayScheduleFreeform({
+  dateKey,
+  freeText,
+  autonomy = 70,
+  tz = 'Asia/Seoul',
+  fixedData = {},
+  language = 'ko'
+}) {
+  const { system, user, context } = buildHolidayFreeformPrompt({ dateKey, freeText, autonomy, tz, fixedData, language });
+  const { windows, dayStart, dayEnd, fixedBlocks } = context;
+
+  // 파일 내 기존 OpenAI 사용 방식에 맞춤
+  const apiKey = import.meta?.env?.VITE_OPENAI_API_KEY;
+  const client = apiKey ? new OpenAI({
+    apiKey,
+    baseURL: import.meta?.env?.VITE_OPENAI_BASE_URL || undefined,
+    dangerouslyAllowBrowser: true, // 파일 상단 ENABLE_BROWSER 패턴과 동일
+  }) : null;
+
+  let aiTasks = null, reason = '';
+  if (!client) reason = 'NO_API_KEY';
+
+  if (client) {
+    try {
+      const res = await client.chat.completions.create({
+        model: 'gpt-4o-mini',
+        temperature: 0.6,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: user },
+        ],
+      });
+      const json = extractJson(res?.choices?.[0]?.message?.content || '');
+      const raw = Array.isArray(json?.tasks) ? json.tasks : [];
+      // 윈도우/하드룰에 맞게 잘라내고 정돈
+      aiTasks = fitIntoWindows(raw, {
+        windows, dayStart, dayEnd,
+        minBlock: 40, restMaxBlocks: 2, restMaxRatio: 0.2,
+        forceType: 'holiday',
+      });
+    } catch (e) {
+      reason = e?.message || 'OPENAI_ERROR';
+      console.warn('[generateHolidayScheduleFreeform] OpenAI 실패:', reason);
+    }
+  }
+
+  if (!aiTasks || aiTasks.length === 0) {
+    // 폴백: 아주 기초적인 규칙 기반 (freeText 키워드 눈치보기)
+    const names = /산책|걷/i.test(freeText) ? ['근처 산책', '카페 타임', '가벼운 취미']
+      : /영화|극장/i.test(freeText) ? ['영화 감상', '간식', '감상 메모']
+        : /전시|미술|박물/i.test(freeText) ? ['전시 관람', '카페 휴식', '정리/느낀점']
+          : ['취미/가벼운 활동', '리프레시', '가벼운 외식'];
+    const block = 60;
+    const raw = [];
+    for (const w of windows) {
+      let c = Math.ceil(w.s / 10) * 10;
+      let i = 0;
+      while (c + block <= w.e && i < names.length) {
+        raw.push({ start: toHHMM(c), end: toHHMM(c + block), type: 'holiday', task: names[i++] });
+        c += block + 20;
+      }
+      if (raw.length >= names.length) break;
+    }
+    aiTasks = withEngine(
+      fitIntoWindows(raw, { windows, dayStart, dayEnd, minBlock: 40, forceType: 'holiday' }),
+      'FALLBACK',
+      reason || 'NO_AI_RESULT'
+    );
+  } else {
+    aiTasks = withEngine(aiTasks, 'OPENAI', null);
+  }
+
+  // 기존 generateHolidaySchedule와 동일하게: 고정블록 + 생성 결과를 합쳐 반환
+  return [...fixedBlocks, ...aiTasks].map(normalizeTask);
+}
+
 
 // ================ 호환 유틸 (다른 페이지에서 씀) =================
 export function generateSlotTimes(start = '06:00', end = '22:00', stepMinutes = 10) {

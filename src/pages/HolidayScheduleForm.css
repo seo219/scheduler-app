@@ -38,19 +38,19 @@
   margin-bottom: 16px;
 }
 
-/* 🏆 버튼 스타일: 진한 회색(무채색)으로 변경 및 !important 적용 */
+/* 🏆 버튼 스타일: 진한 회색(무채색)으로 변경 및 적용 */
 .holiday-form .buttons button {
   padding: 8px 14px;
-  border: 1px solid #555 !important; /* 진한 회색 테두리 강제 적용 */
+  border: 1px solid #555; /* 진한 회색 테두리 강제 적용 */
   border-radius: 8px;
-  background: #444 !important; /* 진한 회색 배경 강제 적용 */
-  color: #ffffff !important; /* 글자색 흰색 강제 적용 */
+  background: #444; /* 진한 회색 배경 강제 적용 */
+  color: #ffffff; /* 글자색 흰색 강제 적용 */
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .holiday-form .buttons button:hover {
-  background: #222 !important; /* hover 시 더 진하게 강제 적용 */
+  background: #222; /* hover 시 더 진하게 강제 적용 */
 }
 
 .holiday-form .holiday-preview {

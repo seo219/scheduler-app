@@ -36,27 +36,27 @@
 /* !important를 사용하여 버튼 색상 우선순위를 최대로 높입니다. */
 .control-btn {
   padding: 10px 18px;
-  border: 1px solid #666 !important; /* 진한 회색 테두리 강제 적용 */
+  border: 1px solid #666; /* 진한 회색 테두리 강제 적용 */
   border-radius: 8px;
-  background: #555 !important; /* 진한 회색 배경 강제 적용 */
-  color: #fff !important; /* 글자색 흰색 강제 적용 */
-  font-weight: 500 !important; /* 글자 굵기 얇게 강제 적용 */
+  background: #555; /* 진한 회색 배경 강제 적용 */
+  color: #fff; /* 글자색 흰색 강제 적용 */
+  font-weight: 500; /* 글자 굵기 얇게 강제 적용 */
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 /* hover 시 더 진하게 */
 .control-btn:hover:not(:disabled) {
-  background: #333 !important;
+  background: #333;
 }
 
 /* 비활성화 버튼 */
 .control-btn:disabled {
-  background: #777 !important;
-  border-color: #666 !important;
-  color: #ccc !important;
+  background: #777;
+  border-color: #666;
+  color: #ccc;
   cursor: not-allowed;
-  opacity: 1 !important;
+  opacity: 1;
 }
 
 /* --- 표와 관련된 나머지 스타일 --- */
@@ -113,7 +113,7 @@
 .preview tbody tr.row-meal    td.label { background: #F5F5F5; box-shadow: 0 0 0 1px #e6e6e6 inset; }
 .preview tbody tr.row-fixed   td.label { background: #E3F9E5; }
 .preview tbody tr.row-holiday td.label { background: #FFEFD5; }
-.btns {
+.btn {
   position: sticky;
   bottom: 12px;
   display: flex;

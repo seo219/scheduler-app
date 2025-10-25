@@ -26,7 +26,7 @@
 /* ✅ 수정: 모든 버튼 스타일 통일 */
 .full-header button,
 .full-header .nav-btn {
-  background: #555 !important; 
+  background: #555; 
   color: #fff; 
   border: 1px solid #444;
   border-radius: 6px; 
@@ -38,7 +38,7 @@
 }
 .full-header button:hover,
 .full-header .nav-btn:hover {
-  background: #333 !important;
+  background: #333;
 }
 
 
@@ -148,33 +148,33 @@
   @page { size: A4 portrait; margin: 12mm; }
 
   html, body {
-    background: #fff !important;
+    background: #fff;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
   .full-page {
-    max-width: none !important;
-    width: 100% !important;
+    max-width: none;
+    width: 100%;
     box-shadow: none;
     padding: 0;
     margin: 0;
   }
 
   .table-wrapper {
-    height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
+    height: auto;
+    max-height: none;
+    overflow: visible;
     border: none;
     border-radius: 0;
   }
-  .table-wrapper::-webkit-scrollbar { display: none !important; }
+  .table-wrapper::-webkit-scrollbar { display: none; }
 
-  .full-table thead { position: static !important; background: #fff; }
+  .full-table thead { position: static; background: #fff; }
 
   .full-header .left,
   .full-header .right,
-  .full-header .center .nav-btn { display: none !important; }
+  .full-header .center .nav-btn { display: none; }
 
   .full-header {
     grid-template-columns: 1fr;
@@ -183,6 +183,6 @@
   .full-header .center { justify-content: center; }
   .full-header h1 { font-size: 16pt; }
 
-  .full-table { page-break-inside: auto; width: 100% !important; }
+  .full-table { page-break-inside: auto; width: 100%; }
   .full-table tr { page-break-inside: avoid; page-break-after: auto; }
 }
