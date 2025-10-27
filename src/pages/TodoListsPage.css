@@ -17,9 +17,8 @@
 
 .todos-page .btn.new-todo {
   background-color: #555;  
-  color: #fff;             
-  border: 1px solid #444;  
-  border-radius: 6px;   
+  color: #fff;
+  border-radius: 4px;   
   padding: 8px 12px;     
   cursor: pointer;      
   transition: background 0.2s ease;
@@ -36,18 +35,17 @@
   margin: 0;
 }
 
-/* 할 일 항목 테두리 강조 */
 .todo-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  margin-bottom: 12px;             /* 항목 간 간격 */
-  border: 2px solid #000;          /*  검은색 테두리 */
-  border-radius: 4px;              /* 살짝 둥글게 */
+  margin-bottom: 12px;
+  border: 2px solid #000;
+  border-radius: 4px;
   box-sizing: border-box;
   gap: 12px;
-  background: #fff;                /* 흰색 배경 */
+  background: #fff;
 }
 
 .todo-item .text {
@@ -103,28 +101,26 @@
   background: #555;
 }
 
-.todos-page .btn.delete {
+.todos-page .todo-item .btn.delete {
   padding: 4px 8px;
-  background: #ef4444; /* 색상 유지 */
-  color: white; /* 색상 유지 */
-  /* ✅ 수정: border: none; 에 추가 */
+  background-color: #ef4444 !important;
+  color: white;
   border: none; 
-  border-radius: 4px; /* 둥근 모서리 유지 */
+  border-radius: 4px;
   cursor: pointer;
   font-size: 15px;
   box-shadow: none; 
   outline: none; 
 }
 
-.btn.delete:hover {
-  background: #dc2626; /* hover 색상 유지 */
+.todos-page .todo-item .btn.delete:hover {
+  background: #dc2626 !important;
 }
 
-/* 추가: 버튼이 클릭된 상태에서도 그림자/테두리 제거 */
 .btn.delete:focus,
 .btn.delete:active {
-    outline: none;
-    box-shadow: none;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .empty {
@@ -133,29 +129,35 @@
   margin-top: 32px;
 }
 
-/* --- 모바일 환경 최적화 --- */
+/* --- 모바일 환경 최적화 (수정된 부분) --- */
 @media (max-width: 600px) {
   .todo-item {
-    flex-wrap: wrap;
+    flex-wrap: wrap; 
     align-items: flex-start;
   }
   
   .todo-item .text {
     width: 100%;
     padding-right: 0;
-    order: 1;
+    order: 1; /* 1번째 줄 */
   }
   
+  /* 날짜 정보와 버튼 그룹을 2번째 줄에 배치 */
   .todo-item .date-info {
     margin-top: 8px; 
-    order: 2;
+    order: 2; /* 2번째 줄 */
+    /* 남은 공간을 최대한 차지하여 actions를 오른쪽으로 밈 */
+    flex: 1 1 auto; 
+    justify-content: flex-start; 
   }
 
+  /* 버튼 그룹: 날짜 정보와 같은 줄, 오른쪽에 배치 */
   .todo-item .actions {
     margin-top: 8px; 
-    order: 3;
-    width: 100%; 
-    justify-content: flex-end; 
+    order: 2; /* 2번째 줄 (date-info와 동일) */
+    width: auto; 
+    justify-content: flex-end; /* 버튼 그룹 내 버튼들을 오른쪽으로 정렬 */
+    flex-shrink: 0; 
   }
   
   .todo-item .actions .btn {

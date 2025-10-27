@@ -43,14 +43,14 @@
 .fixed-schedule input[type="color"] {
   padding: 0;
   height: 20px;
-  width: 18px;
+  width: 75px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
 /* 삭제 버튼 */
 .fixed-schedule .delete-btn {
-  width: 25%;
+  width: 65px;
   padding: 6px 20px;
   background: #555;
   color: #fff;
@@ -112,23 +112,31 @@
     border-radius: 8px;
     box-sizing: border-box;
   }
-  
-  /* ✅ 시간 입력 필드 너비 축소 및 정렬 (최종 수정) */
-  .fixed-schedule input[type="time"] {
-    /* 1fr 컬럼 내에서 max-width만 적용하고 너비를 auto로 설정 */
-    max-width: 80px; 
+
+  .fixed-schedule input[type="color"] {
+    width: 120px !important; /* ⬅️ 시간 선택 칸과 동일하게 120px로 변경 */
+    max-width: 120px !important; /* ⬅️ 동일하게 120px로 변경 */
     min-height: 44px;
     padding: 8px 10px;
     border-radius: 8px;
     box-sizing: border-box;
-    
-    /* ✅ 핵심: 1fr 컬럼 내에서 오른쪽 끝으로 정렬하여 80px만 차지하도록 함 */
+    justify-self: end;
+  }
+  
+  /* ✅ 시간 입력 필드 너비 축소 및 정렬 (최종 수정) */
+  .fixed-schedule input[type="time"] {
+    /* 1fr 컬럼 내에서 max-width만 적용하고 너비를 auto로 설정 */
+    max-width: 120px !important; 
+    min-height: 44px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    box-sizing: border-box;
     justify-self: end; 
-    width: auto; 
+    width: 120px; 
   }
   
   .fixed-schedule label {
-    font-size: 12px;
+    font-size: 15px;
     color: #555;
     align-self: center;
   }
@@ -147,9 +155,10 @@
   .fixed-schedule .delete-btn {
     grid-column: 1 / -1;
     justify-self: end;
-    min-height: 40px;
+    min-height: 30px;
     padding: 8px 12px;
     border-radius: 8px;
+    font-size: 13px;
   }
 }
 

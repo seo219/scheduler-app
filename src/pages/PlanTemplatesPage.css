@@ -73,7 +73,7 @@
 
 .templates-page .template-item .btn.delete {
   padding: 4px 8px;
-  background: #ef4444;
+  background-color: #ef4444 !important;
   color: white;
   border: none;
   border-radius: 4px;
@@ -83,7 +83,7 @@
 }
 
 .template-item .btn.delete:hover {
-  background: #dc2626;
+  background: #dc2626 !important;
 }
 
 .empty {

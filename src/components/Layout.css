@@ -40,8 +40,9 @@
 
 .layout-container main > * {
   width: 100%;
-  max-width: 1000px; /* 페이지 전체의 최대 폭(원하면 720/880 등으로 조정) */
+  max-width: 1000px;
   margin: 0 auto;
+  background-color: #fafafa;
 }
 
 /* 하단 탭과 겹침 방지 */

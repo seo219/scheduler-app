@@ -36,10 +36,6 @@
   margin-bottom: 12px;
 }
 
-.template-name {
-  font-weight: bold;
-}
-
 .btn-load {
   padding: 6px 12px;
   background: #555;      /* 무채색 버튼 (시유) */

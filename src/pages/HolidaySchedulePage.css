@@ -1,201 +1,214 @@
 /* 컨테이너 */
 .holiday-schedule-page {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 28px;
+  max-width: 760px; /* 너비 약간 확장 */
+  margin: 20px auto;
+  padding: 32px;
   text-align: center;
-  font-family: 'Segoe UI', sans-serif;
-  background: #fafafa;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  font-family: 'Pretendard', 'Segoe UI', sans-serif; /* 더 현대적인 폰트 선호 */
+  background: #f8f8f8; /* 아주 연한 배경 */
+  border-radius: 16px; /* 더 부드러운 모서리 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 은은한 그림자 */
+  color: #333; /* 기본 텍스트 색상 */
 }
 .holiday-schedule-page h2 {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  color: #222;
+  font-weight: 700;
+}
+.holiday-schedule-page h4 {
+  color: #555;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+.holiday-schedule-page p {
+  line-height: 1.5;
+  margin: 0 0 4px 0;
+}
+.holiday-schedule-page b {
+  color: #111;
+  font-weight: 700;
 }
 
-/* 상단 컨트롤 라인 (데스크탑 배치) */
-.controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-.controls label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.controls select {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #bbb;
+/* 박스 스타일 통일 */
+.holiday-schedule-page .box {
+  background: #ffffff; /* 흰색 배경 */
+  border: 2px solid #000000; /* 아주 얇고 연한 테두리 */
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: left;
 }
 
-/* 🏆 상/하단 버튼 스타일 (모든 화면 적용: 진한 회색, 얇은 글꼴) */
-/* !important를 사용하여 버튼 색상 우선순위를 최대로 높입니다. */
-.control-btn {
-  padding: 10px 18px;
-  border: 1px solid #666; /* 진한 회색 테두리 강제 적용 */
+/* 상단 안내문(Notice) 스타일 조정 */
+.holiday-schedule-page .box[style*="#fff8e1"] {
+  /* 기존 노란색 스타일을 무채색 계열로 변경 */
+  background: #fefce8; /* 아주 연한 노란색(경고 유지) */
+  border-color: #fce7b0;
+  color: #78350f;
+  font-weight: 500;
+}
+
+
+/* 텍스트 입력 영역 */
+.holiday-schedule-page textarea {
+  width: 100%;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  background: #555; /* 진한 회색 배경 강제 적용 */
-  color: #fff; /* 글자색 흰색 강제 적용 */
-  font-weight: 500; /* 글자 굵기 얇게 강제 적용 */
-  cursor: pointer;
-  transition: all 0.2s ease;
+  padding: 1px;
+  font-size: 14px;
+  color: #444;
+  background: #fdfdfd;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.holiday-schedule-page textarea:focus {
+  border-color: #888;
+  outline: none;
 }
 
-/* hover 시 더 진하게 */
+
+/* 버튼 그룹 */
+.btns {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+/* 🏆 버튼 스타일 (무채색으로 통일) */
+.control-btn {
+  padding: 10px 20px;
+  border: 1px solid #777; /* 진한 회색 테두리 */
+  border-radius: 8px;
+  background: #555; /* 진한 회색 배경 */
+  color: #fff; /* 글자색 흰색 */
+  font-weight: 600; /* 약간 두꺼운 글꼴로 가독성 확보 */
+  font-size: 15px;
+  cursor: pointer;
+  /* transform과 box-shadow 제거, 배경색 전환만 유지 */
+  transition: background 0.2s ease; 
+}
+
+/* hover 시 배경만 더 진하게 (액션 효과 제거) */
 .control-btn:hover:not(:disabled) {
   background: #333;
+  border-color: #333;
+  transform: none; /* 액션 제거 */
 }
 
 /* 비활성화 버튼 */
 .control-btn:disabled {
-  background: #777;
-  border-color: #666;
-  color: #ccc;
+  background: #ccc;
+  border-color: #bbb;
+  color: #777;
   cursor: not-allowed;
   opacity: 1;
+  transform: none;
+  box-shadow: none;
 }
 
-/* --- 표와 관련된 나머지 스타일 --- */
+/* --- 표 (미리보기) 스타일 --- */
+.holiday-schedule-page .table.like {
+  width: 100%;
+  overflow-x: auto;
+}
+.holiday-schedule-page .table.like table {
+  width: 100%;
+  border-collapse: separate; /* 셀 간격 적용 */
+  border-spacing: 0;
+  table-layout: fixed; /* 고정 레이아웃 */
+  min-width: 400px; /* 모바일에서 최소 너비 */
+}
 
-/* ✅ 바깥 테두리 박스 */
-.table-frame {
-  width: fit-content;
-  margin: 0 auto 12px;
-  padding: 6px;
-  border: 2px solid #222;
-  border-radius: 16px;
-  background: #fff;
-  overflow: hidden;
+.holiday-schedule-page .table.like thead {
+  background: #eee; /* 헤더 배경 연한 회색 */
+  border-radius: 8px;
 }
-.table-scroll {
-  max-height: 420px;
-  overflow: auto;
-  padding: 8px 10px;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-}
-.schedule-table {
-  width: 520px; /* <-- 데스크탑 기본 너비 */
-  border-collapse: separate;
-  border-spacing: 8px 10px;
-  margin: 0 auto;
-}
-.schedule-table thead th {
+.holiday-schedule-page .table.like thead th {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: #fff;
-  text-align: left;
-  color: #444;
-  font-weight: 600;
-  padding: 6px 10px;
-  border-radius: 8px;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.04);
-}
-.schedule-table td {
-  padding: 10px 12px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 0 1px #eee inset;
-  vertical-align: middle;
-}
-.schedule-table .time {
-  font-variant-numeric: tabular-nums;
-  width: 90px;
+  background: transparent;
   text-align: center;
+  color: #444;
+  font-weight: 700;
+  padding: 10px 6px;
+  border-bottom: 2px solid #ddd;
 }
-.preview tbody tr.row-sleep   td.label { background: #FFFFFF; box-shadow: 0 0 0 1px #e6e6e6 inset; }
-.preview tbody tr.row-meal    td.label { background: #F5F5F5; box-shadow: 0 0 0 1px #e6e6e6 inset; }
-.preview tbody tr.row-fixed   td.label { background: #E3F9E5; }
-.preview tbody tr.row-holiday td.label { background: #FFEFD5; }
-.btn {
-  position: sticky;
-  bottom: 12px;
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  background: transparent;
-  backdrop-filter: blur(4px);
-  padding: 8px;
-  border-radius: 12px;
+.holiday-schedule-page .table.like tbody tr:nth-child(odd) {
+  background: #f7f7f7; /* 홀수 행 아주 연한 회색 배경 */
 }
-.table-scroll::-webkit-scrollbar {
-  width: 10px;
-}
-.table-scroll::-webkit-scrollbar-thumb {
-  background: #dcdcdc;
-  border-radius: 8px;
-}
-.table-scroll::-webkit-scrollbar-track {
-  background: transparent;
+.holiday-schedule-page .table.like tbody tr:hover {
+  background: #f0f0f0;
 }
 
-/*모바일용*/
+.holiday-schedule-page .table.like tbody td {
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.holiday-schedule-page .table.like tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.holiday-schedule-page .table.like tbody td:first-child {
+  font-variant-numeric: tabular-nums;
+  color: #666;
+  width: 100px;
+}
+.holiday-schedule-page .table.like tbody td:nth-child(2) {
+  width: 80px;
+}
+.holiday-schedule-page .table.like tbody td:last-child {
+  text-align: left;
+}
+
+
+/* 유형 뱃지 스타일 (JS에서 TYPE_COLORS 사용 중이므로 기본 틀만 변경) */
+.holiday-schedule-page .table.like span[style*="inline-block"] {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 6px;
+  border-radius: 4px;
+  /* 색상은 JS에서 오므로, 여기서는 기본 무채색 스타일을 제공하지 않음 */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+
+/* --- 모바일 반응형 --- */
 @media (max-width: 768px) {
-    /* 🏆 상단 컨트롤 (버튼과 드롭다운을 2x2로 배치) */
-    .controls {
-        flex-wrap: wrap; 
-        justify-content: space-between;
-        padding: 0 10px; 
-        gap: 10px 5px; 
-    }
-    .controls > * {
-        width: 49%; 
-        flex-grow: 0; 
-        margin-bottom: 0; 
-    }
-    .controls label {
-        font-size: 14px; 
-        order: 2; 
-        justify-content: flex-start;
-        gap: 6px;
-        white-space: nowrap; 
-    }
-    .controls button:first-child {
-        order: 1; 
-    }
-    .controls button:last-child {
-        order: 1; 
-    }
-    .controls label select {
-        width: 60%;
-        flex-shrink: 0;
-    }
-
-    /*  1. 바깥 프레임의 너비를 100%로 설정하여 잘림 방지 */
-    .table-frame {
-        width: 100%;
-        box-sizing: border-box; /* 패딩과 보더가 너비에 포함되도록 설정 */
-    }
-    /* 스크롤 영역의 패딩을 줄여 공간 확보 */
-    .table-scroll {
-        padding: 4px; 
-    }
-    
-    /* 2. 테이블 너비를 100%로 설정하고 간격 조정 */
-    .schedule-table {
-        width: 100%; 
-        border-spacing: 4px 6px; /* 모바일 환경에 적합하도록 간격 축소 (10px 9px 대신) */
-    }
-    
-    /*  3. 테이블 헤더/셀의 padding을 줄여 공간 확보 */
-    .schedule-table thead th, 
-    .schedule-table td {
-        padding: 6px 4px; /* 데스크탑보다 훨씬 좁게 조정 */
-    }
-
-    /*  4. 시간 컬럼의 고정 너비를 제거하여 공간 확보*/ 
-    .schedule-table .time {
-        width: auto; 
-    }
-    
-    /* 5. 전체 페이지 패딩 축소 */
     .holiday-schedule-page {
-        padding: 16px; /* 모바일에서 좌우 여백을 줄임 */
+        padding: 16px;
+        border-radius: 0; /* 모바일 전체 화면 사용 */
+        margin: 0;
+        box-shadow: none;
+    }
+    
+    .btns {
+        flex-direction: column; /* 모바일에서 버튼 수직 배치 */
+        gap: 8px;
+        margin: 16px 0;
+    }
+    .control-btn {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .holiday-schedule-page h2 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .holiday-schedule-page .box {
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .holiday-schedule-page h4 {
+      font-size: 16px;
+      padding-bottom: 2px;
     }
 }

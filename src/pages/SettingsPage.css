@@ -122,11 +122,11 @@
   border-radius: 6px;
   cursor: pointer;
 
-  background: #ef1616;
+  background-color: #ef1616 !important;
   color: white;
 }
 .btn.delete-account:hover {
-  background: #ab2626;
+  background: #ab2626  !important;
 }
 
 .btn:hover {
