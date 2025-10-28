@@ -230,6 +230,20 @@ export default function CalendarPage() {
   }, [selectedDate]);
 
   /* ---------- actions ---------- */
+  // ✅ 달력 페이지 → 기존 방식(클래식) 휴일 지정
+const handleHolidayClassic = React.useCallback(() => {
+  if (!selectedDate) return;
+  const dateKey = localFormat(selectedDate);
+
+  // 혹시 남아있을 수 있는 새 방식의 세션 데이터를 제거해
+  // 항상 '전체 생성' 플로우로 진입하도록 보장
+  sessionStorage.removeItem(`busy:${dateKey}`);
+
+  // 클래식 라우트로 이동 (전체 시간표 생성)
+  navigate(`/holiday/schedule/classic/${dateKey}`);
+}, [selectedDate, navigate]);
+
+
   const handleCancelHoliday = async () => {
     if (!selectedDate) return;
     const user = auth.currentUser;
@@ -441,7 +455,7 @@ export default function CalendarPage() {
               {viewMode === 'none' && !isPastSelected && (
                 <div className="btn-group">
                   <button onClick={() => navigate(`/plan/${localFormat(selectedDate)}`)}>계획표 만들기</button>
-                  <button onClick={() => navigate(`/holiday/schedule/${localFormat(selectedDate)}`)}>휴일 지정</button>
+                  <button onClick={handleHolidayClassic}>휴일 지정</button>
                 </div>
               )}
 
@@ -460,9 +474,7 @@ export default function CalendarPage() {
               {/* 오늘/미래 + 휴일 */}
               {viewMode === 'holiday' && !isPastSelected && (
                 <div className="btn-group">
-                  <button onClick={() => navigate(`/holiday/schedule/${localFormat(selectedDate)}`)}>
-                    다시 추천 받기
-                  </button>
+                  <button onClick={handleHolidayClassic}>다시 추천 받기</button>
                   <button onClick={handleCancelHoliday}>휴일 해제하기</button>
                 </div>
               )}

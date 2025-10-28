@@ -1,91 +1,92 @@
 // src/pages/HolidaySchedulePage.jsx
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
-import dayjs from "dayjs";
-import "./HolidaySchedulePage.css";
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { auth, db } from '../firebaseConfig';
+import { doc, setDoc } from 'firebase/firestore';
+import './HolidaySchedulePage.css';
+import { TYPE_COLORS } from '../constants/typeColors';
 
-import { app as firebaseApp, auth, db } from "../firebaseConfig";
-import { doc, setDoc } from "firebase/firestore";
-import { createHolidaySchedule } from "../api/holidayPlan";
+// ⛳️ gptScheduler에서 내보낸 함수(없어도 동작하도록 아래에서 가드함)
+import { generateHolidayScheduleFreeform } from '../api/gptScheduler';
 
 import {
   inferSleepFromHistory,
-  loadHolidayPrefs, saveHolidayPrefs,
-  loadLastHolidayMemo, saveHolidayMemo,
-  getCurrentPosition,
-} from "../services/holidayService";
-import { fetchWeatherSummary, reverseGeocode } from "../api/weatherService";
-import { TYPE_COLORS } from "../constants/typeColors";
-
+  loadHolidayPrefs,
+  saveHolidayPrefs,
+  loadLastHolidayMemo,
+  saveHolidayMemo,
+  getCurrentPosition
+} from '../services/holidayService';
+import { fetchWeatherSummary, reverseGeocode } from '../api/weatherService';
 
 /* ---------- 유틸: 결과 정규화 ---------- */
-// function normalizeHolidayResult(res) {
-//   // 다양한 반환 형태에 방어적으로 대응
-//   if (!res) return [];
-//   if (Array.isArray(res)) return res;
-//   if (Array.isArray(res.tasks)) return res.tasks;
-//   if (res.plan && Array.isArray(res.plan.tasks)) return res.plan.tasks;
-//   if (Array.isArray(res.items)) return res.items;
-//   return [];
-// }
+function normalizeHolidayResult(res) {
+  // 다양한 반환 형태에 방어적으로 대응
+  if (!res) return [];
+  if (Array.isArray(res)) return res;
+  if (Array.isArray(res.tasks)) return res.tasks;
+  if (res.plan && Array.isArray(res.plan.tasks)) return res.plan.tasks;
+  if (Array.isArray(res.items)) return res.items;
+  return [];
+}
 
 /* ---------- 유틸: 오프라인(Fallback) 생성기 ---------- */
-// function fallbackHolidayPlan({ sleepTime }) {
-//   // 아주 단순한 기본 일정: 기상~취침 사이를 식사/활동으로 채움
-//   const toMin = (hhmm = '00:00') => {
-//     const [h, m] = String(hhmm).split(':').map(n => parseInt(n, 10));
-//     return (Number.isFinite(h) ? h : 0) * 60 + (Number.isFinite(m) ? m : 0);
-//   };
-//   const toHHMM = (min) => {
-//     const t = Math.max(0, Math.min(1439, Math.round(min)));
-//     const h = String(Math.floor(t / 60)).padStart(2, '0');
-//     const m = String(t % 60).padStart(2, '0');
-//     return `${h}:${m}`;
-//   };
+function fallbackHolidayPlan({ sleepTime }) {
+  // 아주 단순한 기본 일정: 기상~취침 사이를 식사/활동으로 채움
+  const toMin = (hhmm = '00:00') => {
+    const [h, m] = String(hhmm).split(':').map(n => parseInt(n, 10));
+    return (Number.isFinite(h) ? h : 0) * 60 + (Number.isFinite(m) ? m : 0);
+  };
+  const toHHMM = (min) => {
+    const t = Math.max(0, Math.min(1439, Math.round(min)));
+    const h = String(Math.floor(t / 60)).padStart(2, '0');
+    const m = String(t % 60).padStart(2, '0');
+    return `${h}:${m}`;
+  };
 
-//   const wake = toMin(sleepTime?.wakeUp || '08:00');
-//   const bed = toMin(sleepTime?.bedTime || '23:30');
-//   const day = (bed - wake + 1440) % 1440 || 14 * 60; // 비정상 값 방어
+  const wake = toMin(sleepTime?.wakeUp || '08:00');
+  const bed = toMin(sleepTime?.bedTime || '23:30');
+  const day = (bed - wake + 1440) % 1440 || 14 * 60; // 비정상 값 방어
 
-//   // 블록 구성: 아침/점심/저녁 식사 + 오전/오후 활동 + 저녁 활동
-//   const blocks = [
-//     { type: 'meal', start: wake + 30, dur: 40, task: '아침 식사' },
-//     { type: 'holiday', start: wake + 80, dur: 160, task: '오전 활동(산책/카페/전시)' },
-//     { type: 'meal', start: wake + 260, dur: 50, task: '점심 식사' },
-//     { type: 'holiday', start: wake + 320, dur: 200, task: '오후 활동(가벼운 운동/취미)' },
-//     { type: 'meal', start: wake + 530, dur: 60, task: '저녁 식사' },
-//     { type: 'holiday', start: wake + 600, dur: 120, task: '저녁 활동(산책/영화/독서)' },
-//   ].filter(b => b.start >= wake && (b.start + b.dur) <= ((wake + day) % 1440 || 1440));
+  // 블록 구성: 아침/점심/저녁 식사 + 오전/오후 활동 + 저녁 활동
+  const blocks = [
+    { type: 'meal', start: wake + 30, dur: 40, task: '아침 식사' },
+    { type: 'holiday', start: wake + 80, dur: 160, task: '오전 활동(산책/카페/전시)' },
+    { type: 'meal', start: wake + 260, dur: 50, task: '점심 식사' },
+    { type: 'holiday', start: wake + 320, dur: 200, task: '오후 활동(가벼운 운동/취미)' },
+    { type: 'meal', start: wake + 530, dur: 60, task: '저녁 식사' },
+    { type: 'holiday', start: wake + 600, dur: 120, task: '저녁 활동(산책/영화/독서)' },
+  ].filter(b => b.start >= wake && (b.start + b.dur) <= ((wake + day) % 1440 || 1440));
 
-//   // 수면 고정 블록은 저장 시점에만 반영하면 되므로 여기선 제외
-//   return blocks.map(b => ({
-//     type: b.type,
-//     task: b.task,
-//     start: toHHMM(b.start),
-//     end: toHHMM(b.start + b.dur),
-//     origin: 'offline-fallback'
-//   }));
-// }
+  // 수면 고정 블록은 저장 시점에만 반영하면 되므로 여기선 제외
+  return blocks.map(b => ({
+    type: b.type,
+    task: b.task,
+    start: toHHMM(b.start),
+    end: toHHMM(b.start + b.dur),
+    origin: 'offline-fallback'
+  }));
+}
 
 /* ---------- 저장 포맷 통일(+ ‘휴식’류 제거) ---------- */
-// function toSavable(tasks = []) {
-//   return (tasks || [])
-//     .filter(t => !/휴식|rest|break/i.test(String(t.task || t.activity)))
-//     .map(t => {
-//       const type = t.type || 'holiday';
-//       const base = (t.task || t.activity || (type === 'meal' ? '식사' : '활동')) + '';
-//       const name = (type === 'meal' && base.toLowerCase() === 'meal') ? '식사' : base;
-//       return {
-//         task: name,
-//         type,
-//         start: t.start,
-//         end: t.end,
-//         origin: t.origin || 'ai-holiday',
-//       };
-//     });
-// }
+function toSavable(tasks = []) {
+  return (tasks || [])
+    .filter(t => !/휴식|rest|break/i.test(String(t.task || t.activity)))
+    .map(t => {
+      const type = t.type || 'holiday';
+      const base = (t.task || t.activity || (type === 'meal' ? '식사' : '활동')) + '';
+      const name = (type === 'meal' && base.toLowerCase() === 'meal') ? '식사' : base;
+      return {
+        task: name,
+        type,
+        start: t.start,
+        end: t.end,
+        origin: t.origin || 'ai-holiday',
+      };
+    });
+}
 
-export default function HolidaySchedulePage() {
+export default function HolidayScheduleClassic() {
   const params = useParams();
   const location = useLocation();
   // path params: /holiday/schedule/:date | :dateKey | :day | :id
@@ -105,28 +106,6 @@ export default function HolidaySchedulePage() {
   const [notice, setNotice] = useState('');         // 🔔 상단 안내문
   const [tasksForSave, setTasksForSave] = useState([]);
   const [previewRows, setPreviewRows] = useState([]);
-  const { state, search } = useLocation();
-  const inboundBusyRef = useRef([]);
-
-  // 최초 1회: state → sessionStorage 순으로 로딩
-  useEffect(() => {
-    const fromState = state?.busyBlocks;
-    if (Array.isArray(fromState) && fromState.length) {
-      inboundBusyRef.current = fromState;
-      return;
-    }
-    const dateKey = new URLSearchParams(search).get("date") || dayjs().format("YYYY-MM-DD");
-    const raw = sessionStorage.getItem(`busy:${dateKey}`);
-    if (raw) {
-      try {
-        inboundBusyRef.current = JSON.parse(raw) || [];
-      } catch {
-        inboundBusyRef.current = []; // 파싱 실패 시 안전값
-        // console.debug("busy parse failed");
-      }
-    }
-
-  }, [state, search]);
 
   useEffect(() => {
     (async () => {
@@ -176,71 +155,75 @@ export default function HolidaySchedulePage() {
 
   const handleGenerate = async () => {
     const user = auth.currentUser;
-    if (!user) return alert("로그인이 필요합니다.");
+    if (!user) return alert('로그인이 필요합니다.');
 
     setLoading(true);
-    setNotice("");
+    setNotice('');
     try {
-      const dateKey = new URLSearchParams(search).get("date") || dayjs().format("YYYY-MM-DD");
-      const dateISO = dayjs(dateKey).startOf("day").toISOString();
+      // 위치/날씨 한 줄 요약(간단)
+      const locLine = place ? `지역: ${place}` : '';
+      const wxLine = weather?.summaryShort ? `날씨: ${weather.summaryShort}` : '';
+      const wline = [locLine, wxLine].filter(Boolean).join(' · ') || '위치/날씨 정보 없음';
 
-      // 1번에서 전달된 고정 블록이 있으면 우선 사용, 없으면 수면만으로 구성
-      let busyBlocks = inboundBusyRef.current;
-      if (!busyBlocks?.length) {
-        // HH:mm → ISO 간단 변환
-        const toISO = (hhmm) => {
-          if (!hhmm || hhmm.includes("T")) return hhmm;
-          const [h, m] = String(hhmm).split(":").map(Number);
-          return dayjs(dateISO).startOf("day").add(h, "hour").add(m, "minute").toISOString();
-        };
-        busyBlocks = [{
-          title: "수면",
-          type: "sleep",
-          start: toISO(sleepTime?.bedTime || "23:30"),
-          end: toISO(sleepTime?.wakeUp || "08:30"),
-        }];
+      const freeText = [
+        memo?.trim() || '',
+        wline,
+        '실내/실외를 상황에 맞게 추천하고, 이동/휴식 밸런스를 고려해 주세요.'
+      ].filter(Boolean).join('\n');
+
+      const autonomy = 100;
+      const fixedData = { sleepTime };
+
+      // 🔎 진단용 로깅
+      const hasAI =
+        typeof generateHolidayScheduleFreeform === 'function';
+      const hasKey =
+        !!import.meta.env?.VITE_OPENAI_API_KEY;
+
+      console.log('[HolidayAI] hasAI:', hasAI, 'hasKey:', hasKey, 'dateKey:', dateKey);
+
+      let result = null;
+      if (hasAI && hasKey) {
+        try {
+          result = await generateHolidayScheduleFreeform({
+            dateKey,
+            freeText,
+            autonomy,
+            tz: 'Asia/Seoul',
+            fixedData,
+            language: 'ko'
+          });
+          console.log('[HolidayAI] raw result:', result);
+        } catch (e) {
+          console.error('[HolidayAI] generate error:', e);
+        }
+      } else {
+        console.warn('[HolidayAI] AI 비활성 상태(hasAI:', hasAI, 'hasKey:', hasKey, ') → 오프라인 Fallback 사용');
       }
 
-      const locationInfo = { city: place || "", lat: pos?.lat, lon: pos?.lon };
-      const summary = weather?.summaryShort || "정보 없음";
-      const isOutdoorFriendly = !/비|눈|폭우|폭설/.test(summary);
-      const weatherBrief = {
-        summary,
-        tempC: weather?.tempC ?? undefined,
-        precipitation: weather?.precip ?? "unknown",
-        isOutdoorFriendly,
-      };
-      const prefsText = (memo || "").trim();
+      // 결과 정규화
+      let tasks = normalizeHolidayResult(result);
 
-      // 서버에서 아이디어 받고 → 빈 슬롯에 배치까지(createHolidaySchedule 내부에서 처리)
-      const plan = await createHolidaySchedule({
-        app: firebaseApp,
-        dateISO,
-        location: locationInfo,
-        weather: weatherBrief,
-        prefs: prefsText,
-        busyBlocks, // ★ 여기!
-      });
+      // 결과가 비었으면 Fallback
+      let usedFallback = false;
+      if (!tasks || tasks.length === 0) {
+        tasks = fallbackHolidayPlan({ sleepTime });
+        usedFallback = true;
+      }
 
-      const tasks = plan.map((b) => ({
-        task: b.title,
-        type: b.type,
-        start: dayjs(b.start).format("HH:mm"),
-        end: dayjs(b.end).format("HH:mm"),
-        origin: "ai-holiday",
-      }));
+      const cleaned = toSavable(tasks);
+      setTasksForSave(cleaned);
+      buildPreview(cleaned);
 
-      setTasksForSave(tasks);
-      buildPreview(tasks);
-      setNotice("✅ 빈 시간을 AI로 채웠습니다.");
-    } catch (e) {
-      console.error(e);
-      setNotice("⚠️ 생성 중 오류가 발생했습니다.");
+      setNotice(
+        usedFallback
+          ? '⚠️ AI 응답이 비어있어서 오프라인 기본 일정으로 채웠습니다.'
+          : '✅ AI 생성 완료'
+      );
     } finally {
       setLoading(false);
     }
   };
-
 
   const handleSave = async () => {
     const user = auth.currentUser;
@@ -270,7 +253,7 @@ export default function HolidaySchedulePage() {
 
   return (
     <div className="holiday-schedule-page container">
-      <h2>{dateKey || '미지정'} 취미 일정 추천 <span style={{ opacity: .6, fontSize: 14 }}></span></h2>
+      <h2>{dateKey || '미지정'} 휴일 일정 추천 <span style={{ opacity: .6, fontSize: 14 }}></span></h2>
 
       {notice && (
         <div className="box" style={{ background: '#fff8e1', borderColor: '#f59e0b' }}>
@@ -309,10 +292,10 @@ export default function HolidaySchedulePage() {
 
       <div className="btns">
         <button onClick={handleGenerate} className="control-btn" disabled={loading}>
-          {loading ? '생성 중…' : '취미 일정 생성'}
+          {loading ? '생성 중…' : '휴일 일정 생성'}
         </button>
         <button onClick={handleSave} className="control-btn" disabled={!tasksForSave.length}>
-          일정으로 저장
+          휴일 일정으로 저장
         </button>
         <button onClick={() => navigate(-1)} className="control-btn">취소</button>
       </div>

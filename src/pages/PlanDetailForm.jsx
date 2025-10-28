@@ -6,6 +6,8 @@ import { auth, db } from '../firebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { loadTemplate, saveTemplate } from '../services/templateService';
 import './PlanDetailForm.css';
+import dayjs from "dayjs";
+
 
 export default function PlanDetailForm() {
   const { date } = useParams();
@@ -176,25 +178,103 @@ export default function PlanDetailForm() {
   };
 
   // ✅ 휴일 지정 버튼: "휴일 일정 추천" 페이지로 이동만 수행
+  // ✅ buildBusyBlocks(...) 바로 아래에 둡니다.
   const handleGoHolidaySchedule = () => {
-    if (!date) return alert('날짜를 찾을 수 없습니다.');
-    // App.jsx에 route가 'holiday/schedule/:dateKey' 라면 그대로 동작합니다.
-    // (혹시 '.../:date'만 있다면 아래 경로도 동일하게 매칭됩니다.)
-    navigate(`/holiday/schedule/${date}`);
+    if (!date) return alert("날짜를 찾을 수 없습니다.");
+
+    const dateKey = date;
+    const dateISO = dayjs(dateKey).startOf("day").toISOString();
+
+    // 1번 화면의 현재 입력값을 form으로 매핑
+    const form = {
+      wake: fixedData.sleepTime?.wakeUp || "",   // "HH:mm"
+      sleep: fixedData.sleepTime?.bedTime || "",  // "HH:mm"
+      meals: (fixedData.meals || []).map(m => ({
+        title: m.type || "식사",
+        start: m.start,
+        end: m.end,
+      })),
+      plans: (fixedData.schedules || []).map(p => ({
+        title: p.task || "일정",
+        start: p.start,
+        end: p.end,
+      })),
+    };
+
+    const busyBlocks = buildBusyBlocks(dateISO, form);
+
+    // 새로고침에도 유지되도록 백업
+    sessionStorage.setItem(`busy:${dateKey}`, JSON.stringify(busyBlocks));
+
+    // 2번 화면으로 이동(라우트 구조에 맞게 유지)
+    navigate(`/holiday/schedule/${dateKey}`, { state: { busyBlocks } });
   };
+
 
   const handleLoadTemplate = () => {
     navigate(`/templates/select/${date}`);
   };
+
+  // "오전/오후 10:00" 같은 문자열도 대응해서 HH:mm로 바꿔주기
+  function normalizeHHMM(s) {
+    if (!s) return s;
+    const m = String(s).match(/(오전|오후)?\s?(\d{1,2}):(\d{2})/);
+    if (!m) return s; // 이미 HH:mm이면 그대로
+    let h = Number(m[2]), mm = m[3];
+    if (m[1] === "오후" && h < 12) h += 12;
+    if (m[1] === "오전" && h === 12) h = 0;
+    return `${String(h).padStart(2, "0")}:${mm}`;
+  }
+
+  // 같은 날짜 기준 HH:mm → ISO
+  function toISO(dateISO, hhmm) {
+    const t = normalizeHHMM(hhmm);
+    if (!t || t.includes("T")) return t;
+    const [h, m] = t.split(":").map(Number);
+    return dayjs(dateISO).startOf("day").add(h, "hour").add(m, "minute").toISOString();
+  }
+
+  // 수면/식사/고정 → busyBlocks
+  function buildBusyBlocks(dateISO, form) {
+    const out = [];
+    // 수면
+    out.push({
+      title: "수면",
+      type: "sleep",
+      start: toISO(dateISO, form.sleep),   // 예: "02:00"
+      end: toISO(dateISO, form.wake),    // 예: "10:00"
+    });
+    // 식사
+    for (const m of form.meals || []) {
+      out.push({
+        title: m.title || "식사",
+        type: "meal",
+        start: toISO(dateISO, m.start),
+        end: toISO(dateISO, m.end),
+      });
+    }
+    // 고정 일정
+    for (const p of form.plans || []) {
+      out.push({
+        title: p.title || "일정",
+        type: "fixed",
+        start: toISO(dateISO, p.start),
+        end: toISO(dateISO, p.end),
+      });
+    }
+    return out.sort((a, b) => new Date(a.start) - new Date(b.start));
+  }
+
+
 
   return (
     <div className="plan-detail-form">
       <h1> {date} 계획표 작성</h1>
       {/* ✅ 여기만 변경: onClick 핸들러만 교체 */}
       <div className="holiday-template-buttons">
-      <button className="btn-holiday" onClick={handleGoHolidaySchedule}>휴일 지정</button>
-      <button className="btn-template" onClick={handleLoadTemplate}>템플릿 불러오기</button>
-    </div>
+        <button className="btn-holiday" onClick={handleGoHolidaySchedule}>취미 일정 추천</button>
+        <button className="btn-template" onClick={handleLoadTemplate}>템플릿 불러오기</button>
+      </div>
       <FixedSchedule fixedData={fixedData} setFixedData={setFixedData} />
 
       <div className="buttons">
