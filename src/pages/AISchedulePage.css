@@ -48,7 +48,7 @@
 .btn.ghost  { background:#6b7280; border-color:#6b7280; color:#fff; }
 /* 🚨 취소 버튼 빨간색 스타일 */
 .btn.cancel { 
-    background: #dc2626; 
+    background: #dc2626 !important; 
     border-color: #dc2626; 
     color: #fff; 
 }

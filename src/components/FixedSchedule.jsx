@@ -95,7 +95,7 @@ export default function FixedSchedule({ fixedData, setFixedData }) {
       ))}
       <button className="add-btn" onClick={addMeal}>+ 식사 시간 추가</button>
 
-      <h2>고정 스케줄</h2>
+      <h2>일정</h2>
       {fixedList.map((f, i) => (
         <div className="time-row" key={i}>
           <input placeholder="할 일" value={f.task} onChange={e => updateFixed(i, 'task', e.target.value)} />
@@ -108,7 +108,7 @@ export default function FixedSchedule({ fixedData, setFixedData }) {
           <button className="delete-btn" onClick={() => removeFixed(i)}>삭제</button>
         </div>
       ))}
-      <button className="add-btn" onClick={addFixed}>+ 고정 일정 추가</button>
+      <button className="add-btn" onClick={addFixed}>+ 일정 추가</button>
     </div>
   );
 }

@@ -24,9 +24,12 @@
 .fixed-schedule .time-row {
   display: flex;
   align-items: center;
-  gap: 4px; /* 줄 내부 요소 간격 */
-  margin-bottom: 20px; /* 줄 사이 간격 */
-  flex-wrap: wrap; /* 요소가 넘칠 경우 줄바꿈 */
+  gap: 4px;
+  /* 줄 내부 요소 간격 */
+  margin-bottom: 20px;
+  /* 줄 사이 간격 */
+  flex-wrap: wrap;
+  /* 요소가 넘칠 경우 줄바꿈 */
 }
 
 /* 입력창 */
@@ -52,7 +55,8 @@
 .fixed-schedule .delete-btn {
   width: 65px;
   padding: 6px 20px;
-  background: #555;
+  background: #dc2626 !important;
+  border-color: #dc2626;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -60,6 +64,7 @@
   white-space: nowrap;
   min-width: 40px;
 }
+
 .fixed-schedule .delete-btn:hover {
   background: #333;
 }
@@ -82,6 +87,7 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
 .fixed-schedule .add-btn:hover {
   background: #222;
 }
@@ -91,6 +97,7 @@
   padding-top: 16px;
   border-top: 1px solid #ddd;
 }
+
 /* --- 모바일 레이아웃 (~679px) --- */
 @media (max-width: 679px) {
   .fixed-schedule .time-row {
@@ -106,7 +113,8 @@
   .fixed-schedule input[type="text"],
   .fixed-schedule input[type="color"],
   .fixed-schedule select {
-    width: 100%; /* 1fr 컬럼 내에서 100% 사용 */
+    width: 100%;
+    /* 1fr 컬럼 내에서 100% 사용 */
     min-height: 44px;
     padding: 8px 10px;
     border-radius: 8px;
@@ -114,43 +122,49 @@
   }
 
   .fixed-schedule input[type="color"] {
-    width: 120px !important; /* ⬅️ 시간 선택 칸과 동일하게 120px로 변경 */
-    max-width: 120px !important; /* ⬅️ 동일하게 120px로 변경 */
+    width: 120px !important;
+    /* ⬅️ 시간 선택 칸과 동일하게 120px로 변경 */
+    max-width: 120px !important;
+    /* ⬅️ 동일하게 120px로 변경 */
     min-height: 44px;
     padding: 8px 10px;
     border-radius: 8px;
     box-sizing: border-box;
     justify-self: end;
   }
-  
+
   /* ✅ 시간 입력 필드 너비 축소 및 정렬 (최종 수정) */
   .fixed-schedule input[type="time"] {
     /* 1fr 컬럼 내에서 max-width만 적용하고 너비를 auto로 설정 */
-    max-width: 120px !important; 
+    max-width: 120px !important;
     min-height: 44px;
     padding: 8px 10px;
     border-radius: 8px;
     box-sizing: border-box;
-    justify-self: end; 
-    width: 120px; 
+    justify-self: end;
+    width: 120px;
   }
-  
+
   .fixed-schedule label {
     font-size: 15px;
     color: #555;
     align-self: center;
   }
+
   .fixed-schedule label:empty {
     display: none;
   }
+
   /* '할 일' 입력창은 2열 전체를 차지 */
-  .fixed-schedule .time-row > input[placeholder="할 일"] {
+  .fixed-schedule .time-row>input[placeholder="할 일"] {
     grid-column: 1 / -1;
   }
+
   /* 식사 종류 선택창은 2열 전체를 차지 */
   .fixed-schedule .time-row select:first-of-type {
     grid-column: 1 / -1;
   }
+
   /* 삭제 버튼은 2열 전체를 차지하며 오른쪽 끝에 배치 */
   .fixed-schedule .delete-btn {
     grid-column: 1 / -1;
@@ -165,16 +179,18 @@
 
 /* --- 데스크탑 레이아웃 (680px~) --- */
 @media (min-width: 680px) {
+
   /* 수면 시간 라벨 */
   .fixed-schedule .time-row:first-of-type label {
     flex-shrink: 0;
     width: auto;
   }
-  
+
   /* 수면 시간 입력 필드 */
   .fixed-schedule .time-row:first-of-type input[type="time"] {
     flex: 1;
-    max-width: 340px; /* 300px에서 340px로 변경 */
+    max-width: 340px;
+    /* 300px에서 340px로 변경 */
   }
 
   /* 식사 및 고정 스케줄 행 */
@@ -183,7 +199,7 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
   }
-  
+
   /* 식사 및 고정 스케줄 시간 입력 필드 크기 조정 */
   .fixed-schedule .time-row input[type="time"] {
     flex-grow: 1;
@@ -197,7 +213,7 @@
     flex-grow: 0;
     margin-right: 30px;
   }
-  
+
   /* 라벨 가로 길이 확보를 위한 스타일 */
   .fixed-schedule .time-row label {
     flex-shrink: 0;
