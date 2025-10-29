@@ -57,14 +57,14 @@ export default function HolidaySchedulePage() {
    * -------------------------------------------------- */
   useEffect(() => {
     let blocks = [];
-
-    // 1) /holiday/schedule/:date 로 올 때 state로 받은 busyBlocks
+    // 우선순위: path의 dateKey → ?date → 오늘
+    const dk = dateKey || new URLSearchParams(search).get("date") || dayjs().format("YYYY-MM-DD");
     const fromState = state?.busyBlocks;
     if (Array.isArray(fromState) && fromState.length) {
       blocks = fromState;
     } else {
       // 2) 새로고침 대비 sessionStorage 백업값
-      const dk = new URLSearchParams(search).get("date") || dayjs().format("YYYY-MM-DD");
+
       const raw = sessionStorage.getItem(`busy:${dk}`);
       if (raw) {
         try { blocks = JSON.parse(raw) || []; } catch { blocks = []; }
@@ -81,7 +81,7 @@ export default function HolidaySchedulePage() {
       if (!wake.isAfter(bed)) wake = wake.add(1, "day"); // 자정 넘김 보정
       setSleepTime({ bedTime: bed.format("HH:mm"), wakeUp: wake.format("HH:mm") });
     }
-  }, [state, search]);
+  }, [state, search, dateKey]);
 
   /* ----------------------------------------------------
    * 사용자 기본값/위치/날씨
@@ -177,7 +177,7 @@ export default function HolidaySchedulePage() {
     if (!user) return alert("로그인이 필요합니다.");
 
     // 기준 날짜
-    const dk = new URLSearchParams(search).get("date") || dayjs().format("YYYY-MM-DD");
+    const dk = dateKey || new URLSearchParams(search).get("date") || dayjs().format("YYYY-MM-DD");
     const dateISO = dayjs(dk).startOf("day").toISOString();
 
     // 경계(기상~취침) ISO 계산
@@ -239,7 +239,9 @@ export default function HolidaySchedulePage() {
         const rawType = String(b.type || "").toLowerCase();
         const finalType = isBusyMatch
           ? "fixed"
-          : (rawType === "meal" || rawType === "sleep") ? rawType : "holiday";
+          : (rawType === "sleep" || rawType === "meal" /* || rawType === "travel" */)
+            ? rawType
+            : "holiday";
 
         const base = {
           task: b.title,
@@ -249,10 +251,12 @@ export default function HolidaySchedulePage() {
           origin: isBusyMatch ? (b.origin || "user-fixed") : "ai-holiday",
         };
 
-        // color가 있을 때만 필드 추가 (undefined 방지)
+        // busy와 매칭된 블록일 때만 색 복원
         if (isBusyMatch && b.color != null) base.color = b.color;
+
         return base;
       });
+
 
 
 
