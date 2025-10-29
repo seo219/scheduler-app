@@ -231,17 +231,15 @@ export default function CalendarPage() {
 
   /* ---------- actions ---------- */
   // ✅ 달력 페이지 → 기존 방식(클래식) 휴일 지정
-const handleHolidayClassic = React.useCallback(() => {
-  if (!selectedDate) return;
-  const dateKey = localFormat(selectedDate);
+  const handleHolidayClassic = React.useCallback(() => {
+    if (!selectedDate) return;
+    const dateKey = localFormat(selectedDate);
+    sessionStorage.removeItem(`busy:${dateKey}`);     // 혹시 이전 페이지에서 저장한 busyBlocks가 남아있다면 제거
+    navigate(`/holiday/schedule/classic/${dateKey}`); // 전체 시간표 생성(기존 방식)
+  }, [selectedDate, navigate]);
 
-  // 혹시 남아있을 수 있는 새 방식의 세션 데이터를 제거해
-  // 항상 '전체 생성' 플로우로 진입하도록 보장
-  sessionStorage.removeItem(`busy:${dateKey}`);
 
-  // 클래식 라우트로 이동 (전체 시간표 생성)
-  navigate(`/holiday/schedule/classic/${dateKey}`);
-}, [selectedDate, navigate]);
+
 
 
   const handleCancelHoliday = async () => {
@@ -278,8 +276,8 @@ const handleHolidayClassic = React.useCallback(() => {
     if (hasAI) {
       const ok = window.confirm(
         '이 계획표는 AI 스케줄링이 적용되어 있습니다.\n' +
-          '계획표를 수정하면 자동 배치된 할 일(스케줄링)이 초기화될 수 있어요.\n' +
-          '계속하시겠어요?'
+        '계획표를 수정하면 자동 배치된 할 일(스케줄링)이 초기화될 수 있어요.\n' +
+        '계속하시겠어요?'
       );
       if (!ok) return;
     }
@@ -299,20 +297,20 @@ const handleHolidayClassic = React.useCallback(() => {
       const bg = (color && String(color).trim()) || typeColors[type] || typeColors.todo;
 
       if (type === "holiday") {
-        if (start) events.push({ time: start, label: task,        color: "#FFFFFF", key: `s-h${idx}`, kind: "start" });
-        if (end)   events.push({ time: end,   label: `${task} 종료`, color: "#FFFFFF", key: `e-h${idx}`, kind: "end"   });
+        if (start) events.push({ time: start, label: task, color: "#FFFFFF", key: `s-h${idx}`, kind: "start" });
+        if (end) events.push({ time: end, label: `${task} 종료`, color: "#FFFFFF", key: `e-h${idx}`, kind: "end" });
         return;
       }
 
       if (task === "수면") {
-        if (end)   events.push({ time: end,   label: "기상",  color: typeColors.sleep, key: `wake-${idx}`, kind: "end"   });
-        if (start) events.push({ time: start, label: "취침",  color: typeColors.sleep, key: `bed-${idx}`,  kind: "start" });
+        if (end) events.push({ time: end, label: "기상", color: typeColors.sleep, key: `wake-${idx}`, kind: "end" });
+        if (start) events.push({ time: start, label: "취침", color: typeColors.sleep, key: `bed-${idx}`, kind: "start" });
         return;
       }
 
       if (start && end) {
-        events.push({ time: start, label: task,            color: bg, key: `s-${idx}-${start}`, kind: "start" });
-        events.push({ time: end,   label: `${task} 종료`,  color: bg, key: `e-${idx}-${end}`,   kind: "end"   });
+        events.push({ time: start, label: task, color: bg, key: `s-${idx}-${start}`, kind: "start" });
+        events.push({ time: end, label: `${task} 종료`, color: bg, key: `e-${idx}-${end}`, kind: "end" });
       }
     });
 

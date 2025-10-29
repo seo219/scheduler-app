@@ -179,36 +179,36 @@ export default function PlanDetailForm() {
 
   // ✅ 휴일 지정 버튼: "휴일 일정 추천" 페이지로 이동만 수행
   // ✅ buildBusyBlocks(...) 바로 아래에 둡니다.
-  const handleGoHolidaySchedule = () => {
-    if (!date) return alert("날짜를 찾을 수 없습니다.");
+  // const handleGoHolidaySchedule = () => {
+  //   if (!date) return alert("날짜를 찾을 수 없습니다.");
 
-    const dateKey = date;
-    const dateISO = dayjs(dateKey).startOf("day").toISOString();
+  //   const dateKey = date;
+  //   const dateISO = dayjs(dateKey).startOf("day").toISOString();
 
-    // 1번 화면의 현재 입력값을 form으로 매핑
-    const form = {
-      wake: fixedData.sleepTime?.wakeUp || "",   // "HH:mm"
-      sleep: fixedData.sleepTime?.bedTime || "",  // "HH:mm"
-      meals: (fixedData.meals || []).map(m => ({
-        title: m.type || "식사",
-        start: m.start,
-        end: m.end,
-      })),
-      plans: (fixedData.schedules || []).map(p => ({
-        title: p.task || "일정",
-        start: p.start,
-        end: p.end,
-      })),
-    };
+  //   // 1번 화면의 현재 입력값을 form으로 매핑
+  //   const form = {
+  //     wake: fixedData.sleepTime?.wakeUp || "",   // "HH:mm"
+  //     sleep: fixedData.sleepTime?.bedTime || "",  // "HH:mm"
+  //     meals: (fixedData.meals || []).map(m => ({
+  //       title: m.type || "식사",
+  //       start: m.start,
+  //       end: m.end,
+  //     })),
+  //     plans: (fixedData.schedules || []).map(p => ({
+  //       title: p.task || "일정",
+  //       start: p.start,
+  //       end: p.end,
+  //     })),
+  //   };
 
-    const busyBlocks = buildBusyBlocks(dateISO, form);
+  //   const busyBlocks = buildBusyBlocks(dateISO, form);
 
-    // 새로고침에도 유지되도록 백업
-    sessionStorage.setItem(`busy:${dateKey}`, JSON.stringify(busyBlocks));
+  //   // 새로고침에도 유지되도록 백업
+  //   sessionStorage.setItem(`busy:${dateKey}`, JSON.stringify(busyBlocks));
 
-    // 2번 화면으로 이동(라우트 구조에 맞게 유지)
-    navigate(`/holiday/schedule/${dateKey}`, { state: { busyBlocks } });
-  };
+  //   // 2번 화면으로 이동(라우트 구조에 맞게 유지)
+  //   navigate(`/holiday/schedule/${dateKey}`, { state: { busyBlocks } });
+  // };
 
 
   const handleLoadTemplate = () => {
@@ -265,6 +265,120 @@ export default function PlanDetailForm() {
     return out.sort((a, b) => new Date(a.start) - new Date(b.start));
   }
 
+  // ── [버튼] 취미/휴일 일정 추천 페이지로 이동 (busyBlocks 전달)
+// const handleHolidayDesignate = () => {
+//   const dateKey = date;                                   // URL 파라미터로 받은 날짜 (YYYY-MM-DD)
+//   const dateISO = dayjs(dateKey).startOf("day").toISOString();
+
+//   // 현재 폼 값을 buildBusyBlocks가 읽는 형태로 맞춤
+//   const form = {
+//     wake:  fixedData?.sleepTime?.wakeUp || "",            // "HH:mm"
+//     sleep: fixedData?.sleepTime?.bedTime || "",           // "HH:mm"
+//     meals: (fixedData?.meals || []).map(m => ({
+//       title: m.type || "식사",
+//       start: m.start,
+//       end:   m.end,
+//     })),
+//     plans: (fixedData?.schedules || []).map(p => ({
+//       title: p.task || "일정",
+//       start: p.start,
+//       end:   p.end,
+//     })),
+//   };
+
+//   const busyBlocks = buildBusyBlocks(dateISO, form);
+
+//   // 새로고침 대비: 세션스토리지에도 백업
+//   sessionStorage.setItem(`busy:${dateKey}`, JSON.stringify(busyBlocks));
+
+//   // 새 페이지로 넘길 때 state로도 전달
+//   navigate(`/holiday/schedule/${dateKey}`, { state: { busyBlocks } });
+// };
+
+
+//   // 계획표 작성 페이지 → 새 방식 "휴일 지정" (빈 시간만 AI가 채우는 경로로 이동)
+// const handleHolidayDesignate = () => {
+//   if (!date) return;
+//   const dateKey = date;
+//   const dateISO = dayjs(dateKey).startOf("day").toISOString();
+
+//   const toISO = (hhmm) => {
+//     if (!hhmm || hhmm.includes("T")) return hhmm;
+//     const [h, m] = String(hhmm).split(":").map(Number);
+//     return dayjs(dateISO).startOf("day").add(h, "hour").add(m, "minute").toISOString();
+//   };
+//   const toMin = (hhmm) => {
+//     const [h, m] = String(hhmm).split(":").map(Number);
+//     return h * 60 + m;
+//   };
+
+//   const blocks = [];
+
+//   // 수면
+//   const { bedTime, wakeUp } = fixedData?.sleepTime || {};
+//   if (bedTime && wakeUp) {
+//     let start = toISO(bedTime);
+//     let end   = toISO(wakeUp);
+//     // 취침이 자정을 넘는(예: 02:00) 경우 다음날로 이동
+//     if (toMin(bedTime) <= toMin(wakeUp)) {
+//       end = dayjs(end).add(1, "day").toISOString();
+//     }
+//     blocks.push({ title: "수면", type: "sleep", start, end });
+//   }
+
+//   // 식사
+//   for (const m of fixedData?.meals || []) {
+//     if (m.start && m.end) {
+//       blocks.push({ title: m.type || "식사", type: "meal", start: toISO(m.start), end: toISO(m.end) });
+//     }
+//   }
+
+//   // 고정 일정
+//   for (const p of fixedData?.schedules || []) {
+//     if (p.task && p.start && p.end) {
+//       blocks.push({ title: p.task, type: "fixed", start: toISO(p.start), end: toISO(p.end) });
+//     }
+//   }
+
+//   // 새로고침해도 유지되도록 sessionStorage에도 저장
+//   sessionStorage.setItem(`busy:${dateKey}`, JSON.stringify(blocks));
+
+//   // ★ 새 방식 라우트로 이동 (state에도 싣기)
+//   navigate(`/holiday/schedule/${dateKey}`, { state: { busyBlocks: blocks } });
+// };
+
+  // 계획표 작성 페이지 → 새 방식 "휴일 지정" (빈 시간만 AI가 채우는 경로로 이동)
+const handleHolidayDesignate = () => {
+  if (!date) return;
+
+  const dateKey = date;
+  const dateISO = dayjs(dateKey).startOf("day").toISOString();
+
+  // 1번 화면의 현재 입력값을 form으로 정리
+  const form = {
+    wake:  fixedData.sleepTime?.wakeUp || "",  // "HH:mm"
+    sleep: fixedData.sleepTime?.bedTime || "", // "HH:mm"
+    meals: (fixedData.meals || []).map(m => ({
+      title: m.type || "식사",
+      start: m.start,
+      end:   m.end,
+    })),
+    plans: (fixedData.schedules || []).map(p => ({
+      title: p.task || "일정",
+      start: p.start,
+      end:   p.end,
+    })),
+  };
+
+  // ✅ 여기서 buildBusyBlocks를 실제 사용 → 미사용 경고 사라짐
+  const busyBlocks = buildBusyBlocks(dateISO, form);
+
+  // 새로고침 대비 백업
+  sessionStorage.setItem(`busy:${dateKey}`, JSON.stringify(busyBlocks));
+
+  // 새 방식 라우트로 이동(state도 전달)
+  navigate(`/holiday/schedule/${dateKey}`, { state: { busyBlocks } });
+};
 
 
   return (
@@ -272,7 +386,7 @@ export default function PlanDetailForm() {
       <h1> {date} 계획표 작성</h1>
       {/* ✅ 여기만 변경: onClick 핸들러만 교체 */}
       <div className="holiday-template-buttons">
-        <button className="btn-holiday" onClick={handleGoHolidaySchedule}>취미 일정 추천</button>
+        <button className="btn-holiday" onClick={handleHolidayDesignate}>취미 일정 추천</button>
         <button className="btn-template" onClick={handleLoadTemplate}>템플릿 불러오기</button>
       </div>
       <FixedSchedule fixedData={fixedData} setFixedData={setFixedData} />
