@@ -19,11 +19,11 @@ import { TYPE_COLORS } from "../constants/typeColors";
 
 // 기본 색(저장 시 color가 없을 때 보정)
 const TYPE_DEFAULT_COLORS = {
-  sleep:  "#E3D1FF",
-  meal:   "#F5F5F5",
-  fixed:  "#E0E0E0",
+  sleep: "#E3D1FF",
+  meal: "#F5F5F5",
+  fixed: "#E0E0E0",
   travel: "#F0F0F0",
-  holiday:"#FFFFFF",
+  holiday: "#FFFFFF",
 };
 
 
@@ -228,13 +228,34 @@ export default function HolidaySchedulePage() {
       // 서버가 경계를 벗어나도 한 번 더 자르기
       const plan = clipToWindow(planRaw || [], wakeISO0, bedISO0);
 
-      const tasks = plan.map((b) => ({
-        task: b.title,
-        type: b.type,
-        start: dayjs(b.start).format("HH:mm"),
-        end: dayjs(b.end).format("HH:mm"),
-        origin: "ai-holiday",
-      }));
+      // busyBlocks(사용자 고정)과 동일 시간 구간만 fixed로 인정
+      const toKey = (s, e) => `${dayjs(s).toISOString()}__${dayjs(e).toISOString()}`;
+      const BUSY_KEYS = new Set((busyInWindow || []).map(b => toKey(b.start, b.end)));
+
+      const tasks = (plan || []).map((b) => {
+        const key = toKey(b.start, b.end);
+        const isBusyMatch = BUSY_KEYS.has(key);
+
+        const rawType = String(b.type || "").toLowerCase();
+        const finalType = isBusyMatch
+          ? "fixed"
+          : (rawType === "meal" || rawType === "sleep") ? rawType : "holiday";
+
+        const base = {
+          task: b.title,
+          type: finalType,
+          start: dayjs(b.start).format("HH:mm"),
+          end: dayjs(b.end).format("HH:mm"),
+          origin: isBusyMatch ? (b.origin || "user-fixed") : "ai-holiday",
+        };
+
+        // color가 있을 때만 필드 추가 (undefined 방지)
+        if (isBusyMatch && b.color != null) base.color = b.color;
+        return base;
+      });
+
+
+
 
       // 수면 블록이 없으면 하나 추가(기존 일정은 그대로 유지)
       const hasSleep = tasks.some(t => t.type === 'sleep' || t.task === '수면');
@@ -283,17 +304,20 @@ export default function HolidaySchedulePage() {
     if (!tasksForSave?.length) return alert("생성된 일정이 없습니다.");
 
     const dayRef = doc(db, "users", user.uid, "dailySchedules", dateKey);
-    await setDoc(
-      dayRef,
-      {
-        generatedTasks: tasksForSave,
-        isHoliday: true,
-        dayType: "holiday",
-        source: "ai-holiday",
-        updatedAt: new Date().toISOString(),
-      },
-      { merge: true }
-    );
+    // undefined를 가진 키는 제거
+    const stripUndefined = (obj) =>
+      Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
+
+    const cleanedTasks = (tasksForSave || []).map(stripUndefined);
+
+    await setDoc(dayRef, {
+      generatedTasks: cleanedTasks,   // ← 여기만 cleanedTasks로 바꿈
+      isHoliday: true,
+      dayType: "holiday",
+      source: "ai-holiday",
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
+
     await saveHolidayMemo(user.uid, dateKey, memo || "", {
       weatherSummary: weather?.summaryShort || null,
       position: pos ? { lat: pos.lat, lon: pos.lon } : null,

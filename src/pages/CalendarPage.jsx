@@ -8,6 +8,7 @@ import { doc, getDoc, deleteDoc, collection, getDocs, setDoc } from 'firebase/fi
 import './CalendarPage.css';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import Holidays from 'date-holidays';
+import dayjs from "dayjs";
 
 /* ---------- date helpers ---------- */
 const DAY_MS = 86400000;
@@ -94,6 +95,39 @@ export default function CalendarPage() {
 
   const isPastSelected = selectedDate ? dayStart(selectedDate) < dayStart(new Date()) : false;
   const localFormat = (date) => keyOf(date);
+
+  // 저장된 generatedTasks → busyBlocks로 변환 (AI 결과는 제외)
+  const buildBusyFromGenerated = React.useCallback((dateKey, tasks = []) => {
+    const dateISO = dayjs(dateKey).startOf("day").toISOString();
+
+    const toISO = (t) => {
+      const s = String(t ?? "");
+      if (!s) return null;
+      if (s.includes("T")) return s; // 이미 ISO면 그대로
+      const [h, m] = s.split(":").map(Number);
+      if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
+      return dayjs(dateISO).startOf("day").add(h, "hour").add(m, "minute").toISOString();
+    };
+
+    const out = [];
+    for (const t of tasks || []) {
+      // ★ AI가 만든 블록은 busy로 보지 않음
+      if (t.origin === "ai-holiday" || t.type === "holiday") continue;
+
+      if (t.task === "수면" || t.type === "sleep") {
+        const start = toISO(t.start), end = toISO(t.end);
+        if (start && end) out.push({ title: "수면", type: "sleep", start, end });
+      } else if (t.type === "meal") {
+        const start = toISO(t.start), end = toISO(t.end);
+        if (start && end) out.push({ title: t.task || "식사", type: "meal", start, end });
+      } else if (t.type === "fixed") {
+        const start = toISO(t.start), end = toISO(t.end);
+        if (start && end) out.push({ title: t.task || "일정", type: "fixed", start, end, color: t.color });
+      }
+    }
+    return out.sort((a, b) => new Date(a.start) - new Date(b.start));
+  }, []);
+
 
   /* ---------- init from ?date= ---------- */
   useEffect(() => {
@@ -275,7 +309,7 @@ export default function CalendarPage() {
 
     if (hasAI) {
       const ok = window.confirm(
-        '이 계획표는 AI 스케줄링이 적용되어 있습니다.\n' +
+        '이 계획표는 스케줄링이 적용되어 있습니다.\n' +
         '계획표를 수정하면 자동 배치된 할 일(스케줄링)이 초기화될 수 있어요.\n' +
         '계속하시겠어요?'
       );
@@ -464,7 +498,7 @@ export default function CalendarPage() {
                     계획표 수정하기
                   </button>
                   <button onClick={() => navigate(`/ai/schedule/${localFormat(selectedDate)}`)}>
-                    AI 스케줄링 받기
+                    스케줄링 받기
                   </button>
                 </div>
               )}
@@ -472,7 +506,16 @@ export default function CalendarPage() {
               {/* 오늘/미래 + 휴일 */}
               {viewMode === 'holiday' && !isPastSelected && (
                 <div className="btn-group">
-                  <button onClick={handleHolidayClassic}>다시 추천 받기</button>
+                  <button
+                    onClick={() => {
+                      const key = localFormat(selectedDate);
+                      const blocks = buildBusyFromGenerated(key, scheduleData);
+                      // 새로고침 대비하여 sessionStorage에도 백업
+                      sessionStorage.setItem(`busy:${key}`, JSON.stringify(blocks));
+                      // state로도 전달
+                      navigate(`/holiday/schedule/${key}`, { state: { busyBlocks: blocks } });
+                    }}
+                  >다시 추천 받기</button>
                   <button onClick={handleCancelHoliday}>휴일 해제하기</button>
                 </div>
               )}

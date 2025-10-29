@@ -422,7 +422,7 @@ export default function AISchedulePage() {
   return (
     <div className="ai-schedule container">
       {/* 🗑️ 인라인 스타일 오버라이드 블록을 제거합니다. */}
-      <h1>{date} AI 스케줄링</h1>
+      <h1>{date} 스케줄링</h1>
 
       {/* 🗑️ 상단 버튼 바 제거됨 */}
 
